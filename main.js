@@ -1,12 +1,13 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-// const Colors = ["red", "black", "blue"];
 const FillColor = "black";
 const BallRadius = 30;
 const BrickHeight = 50;
 const BrickWidth = 210;
-const dx = 5;
-const dy = 5;
+const PaddleWidth = 300;
+const PaddleHeight = 40;
+let dx = 5;
+let dy = 5;
 let BricksArray;
 
 class Shape {
@@ -57,6 +58,50 @@ class Ball extends Shape {
   }
 }
 
+let GameBall = new Ball({
+  position: { x: canvas.width / 2, y: canvas.height - 80 },
+  Velocity: { x: 0, y: 0 },
+  width: undefined,
+  height: undefined,
+  radius: BallRadius,
+});
+
+class Paddle extends Shape {
+  constructor({ position, Velocity, width, height }) {
+    super({ position, Velocity, width, height });
+    this.radii = 10;
+  }
+  draw() {
+    context.beginPath();
+    context.roundRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height,
+      this.radii
+    );
+    context.fillStyle = "red";
+    context.fill();
+    context.closePath();
+  }
+}
+
+let GamePaddle = new Paddle({
+  position: { x: canvas.width / 2, y: canvas.height - 70 },
+  Velocity: { x: 0, y: 0 },
+  width: PaddleWidth,
+  height: PaddleHeight,
+});
+
+function DrawCanvas() {
+  GamePaddle.draw();
+  DrawTiles();
+  GameBall.draw();
+  setInterval(() => {
+    UpdateBallPosition();
+  }, 10);
+}
+
 function DrawTiles() {
   for (let j = 20; j < 350; j++) {
     for (let i = 20; i < canvas.width; ) {
@@ -74,56 +119,27 @@ function DrawTiles() {
   }
 }
 
-let GameBall = new Ball({
-  position: { x: canvas.width / 2, y: canvas.height - 80 },
-  Velocity: { x: 0, y: 0 },
-  width: undefined,
-  height: undefined,
-  radius: BallRadius,
-});
-
-function GenerateBrickColor() {
-  return Colors[Math.floor(Math.random() * Colors.length)];
-}
-
 function UpdateBallPosition() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   DrawTiles();
+  if (
+    GameBall.position.x + dx > canvas.width - BallRadius ||
+    GameBall.position.x + dx < BallRadius
+  ) {
+    dx = -dx;
+  }
+  if (
+    GameBall.position.y + dy > canvas.height - BallRadius ||
+    GameBall.position.y + dy < BallRadius
+  ) {
+    dy = -dy;
+  }
   GameBall.position.x += dx;
-  GameBall.position.y -= dy;
-  GameBall.draw();
-}
-
-function DrawCanvas() {
-  DrawTiles();
-  setInterval(() => {
-    UpdateBallPosition();
-  }, 10);
-
+  GameBall.position.y += dy;
   GameBall.draw();
   GamePaddle.draw();
 }
 
-class Paddle extends Shape {
-  constructor({ position, Velocity, width, height }) {
-    super({ position, Velocity, width, height });
-  }
-
-  draw() {
-    context.beginPath();
-    context.rect(this.position.x, this.position.y, this.width, this.height);
-    context.fillStyle = "red";
-    context.fill();
-    context.closePath();
-  }
-}
-
-let GamePaddle = new Paddle({
-    position: { x: canvas.width/2, y: canvas.height-70},
-    Velocity: { x: 0, y: 0 },
-    width: 150,
-    height: 30
-  });
-  GamePaddle.draw();
+// Initiating the game
 
 DrawCanvas();
