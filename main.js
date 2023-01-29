@@ -76,7 +76,7 @@ function DrawTiles() {
 }
 // function DrawBall() {
   let GameBall = new Ball({
-    position: { x: canvas.width/2, y: canvas.height-80 },
+    position: { x: canvas.width/2, y: canvas.height-130 },
     Velocity: { x: 0, y: 0 },
     width: 150,
     height: 150,
@@ -96,7 +96,7 @@ function DrawTiles() {
 
   draw() {
     context.beginPath();
-    context.rect(this.position.x, this.position.y, this.width, canvas.height-this.height);
+    context.rect(this.position.x, this.position.y, this.width, this.height);
     context.fillStyle = "red";
     context.fill();
     context.closePath();
@@ -104,10 +104,10 @@ function DrawTiles() {
 }
 
 let GamePaddle = new Paddle({
-    position: { x: canvas.width/2, y: canvas.height-30},
+    position: { x: canvas.width/2, y: canvas.height-70},
     Velocity: { x: 0, y: 0 },
     width: 150,
-    height: 150
+    height: 30
   });
   GamePaddle.draw();
 
