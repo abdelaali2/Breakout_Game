@@ -56,29 +56,6 @@ class Ball extends Shape {
   }
 }
 
-//     for (let i = 0; i < 4; i++) {
-//       for (let j = 0; j < 3; j++) {
-//         context.beginPath();
-//         this.position.x = 25 + j * 50; // x coordinate
-//         this.position.y = 25 + i * 50; // y coordinate
-//         rad = 20; // Arc radius
-//         startAngle = 0; // Starting point on circle
-//         endAngle = Math.PI + (Math.PI * j) / 2; // End point on circle
-//         counterclockwise = i % 2 !== 0; // clockwise or counterclockwise
-
-//         context.arc(this.position.x, this.position.y, rad, startAngle, endAngle, counterclockwise);
-
-//         if (i > 1) {
-//           context.fill();
-//         } else {
-//           context.stroke();
-//         }
-//       }
-//     }
-//   }
-
-// }
-
 
 function DrawCanvas() {
   DrawTiles();
