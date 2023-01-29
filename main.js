@@ -1,11 +1,14 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-const Colors = ["red", "green", "blue"];
 const FillColor = "black";
-const BrickWidth = 107;
+const BallRadius = 30;
 const BrickHeight = 50;
-const sangle=0;
-const eangle=Math.PI *2;
+const BrickWidth = 210;
+const PaddleWidth = 300;
+const PaddleHeight = 40;
+let dx = 5;
+let dy = 5;
+let BricksArray;
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -39,27 +42,66 @@ class Brick extends Shape {
 }
 
 class Ball extends Shape {
-  constructor({ position, Velocity, width, height, rad }) {
+  constructor({ position, Velocity, width, height, radius }) {
     super({ position, Velocity, width, height });
-    this.rad = rad
-    this.sangle = sangle
-    this.eangle = eangle
+    this.radius = radius;
   }
   draw() {
     // this.position.x += moveX;
     // this.position.x += moveY;
     context.beginPath();
-    context.fillStyle = 'black';
-    context.arc(this.position.x, this.position.y, this.rad, this.sangle, this.eangle, Math.PI * 2);
+    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    context.fillStyle = "#0095DD";
+    context.fill();
+    context.closePath();
+    // context.beginPath();
+    // context.fill();
+    // context.closePath();
+  }
+}
+
+let GameBall = new Ball({
+  position: { x: canvas.width / 2, y: canvas.height - 80 },
+  Velocity: { x: 0, y: 0 },
+  width: undefined,
+  height: undefined,
+  radius: BallRadius,
+});
+
+class Paddle extends Shape {
+  constructor({ position, Velocity, width, height }) {
+    super({ position, Velocity, width, height });
+    this.radii = 10;
+  }
+  draw() {
+    context.beginPath();
+    context.roundRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height,
+      this.radii
+    );
+    context.fillStyle = "red";
     context.fill();
     context.closePath();
   }
 }
 
+let GamePaddle = new Paddle({
+  position: { x: canvas.width / 2, y: canvas.height - 70 },
+  Velocity: { x: 0, y: 0 },
+  width: PaddleWidth,
+  height: PaddleHeight,
+});
 
 function DrawCanvas() {
+  GamePaddle.draw();
   DrawTiles();
-  DrawBall();
+  GameBall.draw();
+  setInterval(() => {
+    UpdateBallPosition();
+  }, 10);
 }
 
 function DrawTiles() {
@@ -68,42 +110,38 @@ function DrawTiles() {
       let BrickObject = new Brick({
         position: { x: i, y: j },
         Velocity: { x: 0, y: 0 },
-        width: 107,
-        height: 50,
+        width: BrickWidth,
+        height: BrickHeight,
         radii: 10,
       });
       BrickObject.draw();
-      i += BrickWidth + 20;
+      i += BrickWidth + 10;
     }
     j += BrickHeight + 30;
   }
 }
-function DrawBall() {
-  let GameBall = new Ball({
-    position: { x: canvas.width / 2, y: canvas.height - 150 },
-    Velocity: { x: 0, y: 0 },
-    width: 150,
-    height: 150,
-    radius: 150
-  });
+
+function UpdateBallPosition() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  DrawTiles();
+  if (
+    GameBall.position.x + dx > canvas.width - BallRadius ||
+    GameBall.position.x + dx < BallRadius
+  ) {
+    dx = -dx;
+  }
+  if (
+    GameBall.position.y + dy > canvas.height - BallRadius ||
+    GameBall.position.y + dy < BallRadius
+  ) {
+    dy = -dy;
+  }
+  GameBall.position.x += dx;
+  GameBall.position.y += dy;
   GameBall.draw();
+  GamePaddle.draw();
 }
 
-// function GenerateBrickColor() {
-//   return Colors[Math.floor(Math.random() * Colors.length)];
-// }
-let BallTest= new Ball({
-    position: { x: canvas.width / 2, y: canvas.height - 150 },
-    Velocity: { x: 0, y: 0 },
-    width: 30,
-    height: 30,
-    rad: 30,
-    sangle : 0,// Starting point on circle
-    eangle: (Math.PI * 2)
-});
-BallTest.draw();
+// Initiating the game
 
 DrawCanvas();
-setInterval(() => {
-  DrawCanvas();
-}, 10000);
