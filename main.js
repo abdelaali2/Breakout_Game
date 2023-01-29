@@ -1,10 +1,15 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-const Colors = ["red", "green", "blue"];
 const FillColor = "black";
-const BrickWidth = 107;
+const BallRadius = 30;
 const BrickHeight = 50;
 const StartButton=document.getElementById("Startbutton");
+const BrickWidth = 210;
+const PaddleWidth = 300;
+const PaddleHeight = 40;
+let dx = 5;
+let dy = 5;
+let BricksArray;
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -38,13 +43,13 @@ class Brick extends Shape {
 }
 
 class Ball extends Shape {
-  constructor({ position, Velocity, width, height, radius}) {
+  constructor({ position, Velocity, width, height, radius }) {
     super({ position, Velocity, width, height });
-    this.radius=radius;
+    this.radius = radius;
   }
   draw() {
     context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
+    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
     context.fillStyle = "#0095DD";
     context.fill();
     context.closePath();
@@ -54,9 +59,48 @@ class Ball extends Shape {
   }
 }
 
+let GameBall = new Ball({
+  position: { x: canvas.width / 2, y: canvas.height - 80 },
+  Velocity: { x: 0, y: 0 },
+  width: undefined,
+  height: undefined,
+  radius: BallRadius,
+});
+
+class Paddle extends Shape {
+  constructor({ position, Velocity, width, height }) {
+    super({ position, Velocity, width, height });
+    this.radii = 10;
+  }
+  draw() {
+    context.beginPath();
+    context.roundRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height,
+      this.radii
+    );
+    context.fillStyle = "red";
+    context.fill();
+    context.closePath();
+  }
+}
+
+let GamePaddle = new Paddle({
+  position: { x: canvas.width / 2, y: canvas.height - 70 },
+  Velocity: { x: 0, y: 0 },
+  width: PaddleWidth,
+  height: PaddleHeight,
+});
+
 function DrawCanvas() {
+  GamePaddle.draw();
   DrawTiles();
- // DrawBall();
+  GameBall.draw();
+  setInterval(() => {
+    UpdateBallPosition();
+  }, 10);
 }
 
 function DrawTiles() {
@@ -65,38 +109,38 @@ function DrawTiles() {
       let BrickObject = new Brick({
         position: { x: i, y: j },
         Velocity: { x: 0, y: 0 },
-        width: 107,
-        height: 50,
+        width: BrickWidth,
+        height: BrickHeight,
         radii: 10,
       });
       BrickObject.draw();
-      i += BrickWidth + 20;
+      i += BrickWidth + 10;
     }
     j += BrickHeight + 30;
   }
 }
-// function DrawBall() {
-  // let GameBall = new Ball({
-  //   position: { x: canvas.width/2, y: canvas.height-130 },
-  //   Velocity: { x: 0, y: 0 },
-  //   width: 150,
-  //   height: 150,
-  //   radius: 30
-  // });
-//   GameBall.draw();
-// }
 
-// function GenerateBrickColor() {
-//   return Colors[Math.floor(Math.random() * Colors.length)];
-// }
-StartButton.addEventListener("click",Startgame);
-function Startgame()
-{
-  console.log("game started");
+function UpdateBallPosition() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  DrawTiles();
+  if (
+    GameBall.position.x + dx > canvas.width - BallRadius ||
+    GameBall.position.x + dx < BallRadius
+  ) {
+    dx = -dx;
+  }
+  if (
+    GameBall.position.y + dy > canvas.height - BallRadius ||
+    GameBall.position.y + dy < BallRadius
+  ) {
+    dy = -dy;
+  }
+  GameBall.position.x += dx;
+  GameBall.position.y += dy;
+  GameBall.draw();
+  GamePaddle.draw();
 }
 
-DrawCanvas();
-setInterval(() => {
-  DrawCanvas();
-}, 10000);
+// Initiating the game
 
+DrawCanvas();
