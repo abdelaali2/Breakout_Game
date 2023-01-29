@@ -41,16 +41,19 @@ class Brick extends Shape {
 }
 
 class Ball extends Shape {
-  constructor({ position, Velocity, width, height, radius }) {
+  constructor({ position, Velocity, width, height, radius}) {
     super({ position, Velocity, width, height });
-    this.radius = radius;
+    this.radius=radius;
   }
   draw() {
     context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
     context.fillStyle = "#0095DD";
     context.fill();
     context.closePath();
+    // context.beginPath();
+    // context.fill();
+    // context.closePath();
   }
 }
 
@@ -72,12 +75,12 @@ function DrawTiles() {
 }
 
 let GameBall = new Ball({
-  position: { x: canvas.width / 2, y: canvas.height - 150 },
-  Velocity: { x: 0, y: 0 },
-  width: undefined,
-  height: undefined,
-  radius: BallRadius,
-});
+    position: { x: canvas.width/2, y: canvas.height-80 },
+    Velocity: { x: 0, y: 0 },
+    width: undefined,
+    height: undefined,
+    radius: BallRadius
+  });
 
 function GenerateBrickColor() {
   return Colors[Math.floor(Math.random() * Colors.length)];
@@ -93,6 +96,7 @@ function UpdateBallPosition() {
   GameBall.draw();
 }
 
+
 function DrawCanvas() {
   DrawTiles();
   setInterval(() => {
@@ -102,5 +106,27 @@ function DrawCanvas() {
 
   GameBall.draw();
 }
+
+  class Paddle extends Shape {
+    constructor({ position, Velocity, width, height }) {
+    super({ position, Velocity, width, height });
+  }
+
+  draw() {
+    context.beginPath();
+    context.rect(this.position.x, this.position.y, this.width, canvas.height-this.height);
+    context.fillStyle = "red";
+    context.fill();
+    context.closePath();
+}
+}
+
+let GamePaddle = new Paddle({
+    position: { x: canvas.width/2, y: canvas.height-30},
+    Velocity: { x: 0, y: 0 },
+    width: 150,
+    height: 150
+  });
+  GamePaddle.draw();
 
 DrawCanvas();
