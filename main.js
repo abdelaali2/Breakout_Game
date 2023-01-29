@@ -4,6 +4,8 @@ const Colors = ["red", "green", "blue"];
 const FillColor = "black";
 const BrickWidth = 107;
 const BrickHeight = 50;
+const sangle=0;
+const eangle=Math.PI *2;
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -12,7 +14,7 @@ class Shape {
     this.width = width;
     this.height = height;
   }
-  draw() {}
+  draw() { }
 }
 
 class Brick extends Shape {
@@ -37,17 +39,46 @@ class Brick extends Shape {
 }
 
 class Ball extends Shape {
-  constructor({ position, Velocity, width, height }) {
+  constructor({ position, Velocity, width, height, rad }) {
     super({ position, Velocity, width, height });
+    this.rad = rad
+    this.sangle = sangle
+    this.eangle = eangle
   }
   draw() {
+    // this.position.x += moveX;
+    // this.position.x += moveY;
     context.beginPath();
-    context.arc(this.position.x, this.position.y, 20, 0, Math.PI * 2, false);
-    context.fillStyle = "white";
+    context.fillStyle = 'black';
+    context.arc(this.position.x, this.position.y, this.rad, this.sangle, this.eangle, Math.PI * 2);
     context.fill();
     context.closePath();
   }
 }
+
+//     for (let i = 0; i < 4; i++) {
+//       for (let j = 0; j < 3; j++) {
+//         context.beginPath();
+//         this.position.x = 25 + j * 50; // x coordinate
+//         this.position.y = 25 + i * 50; // y coordinate
+//         rad = 20; // Arc radius
+//         startAngle = 0; // Starting point on circle
+//         endAngle = Math.PI + (Math.PI * j) / 2; // End point on circle
+//         counterclockwise = i % 2 !== 0; // clockwise or counterclockwise
+
+//         context.arc(this.position.x, this.position.y, rad, startAngle, endAngle, counterclockwise);
+
+//         if (i > 1) {
+//           context.fill();
+//         } else {
+//           context.stroke();
+//         }
+//       }
+//     }
+//   }
+
+// }
+
 
 function DrawCanvas() {
   DrawTiles();
@@ -56,7 +87,7 @@ function DrawCanvas() {
 
 function DrawTiles() {
   for (let j = 20; j < 350; j++) {
-    for (let i = 20; i < canvas.width; ) {
+    for (let i = 20; i < canvas.width;) {
       let BrickObject = new Brick({
         position: { x: i, y: j },
         Velocity: { x: 0, y: 0 },
@@ -72,10 +103,11 @@ function DrawTiles() {
 }
 function DrawBall() {
   let GameBall = new Ball({
-    position: { x: canvas.width/2, y: canvas.height-150 },
+    position: { x: canvas.width / 2, y: canvas.height - 150 },
     Velocity: { x: 0, y: 0 },
     width: 150,
     height: 150,
+    radius: 150
   });
   GameBall.draw();
 }
@@ -83,6 +115,16 @@ function DrawBall() {
 // function GenerateBrickColor() {
 //   return Colors[Math.floor(Math.random() * Colors.length)];
 // }
+let BallTest= new Ball({
+    position: { x: canvas.width / 2, y: canvas.height - 150 },
+    Velocity: { x: 0, y: 0 },
+    width: 30,
+    height: 30,
+    rad: 30,
+    sangle : 0,// Starting point on circle
+    eangle: (Math.PI * 2)
+});
+BallTest.draw();
 
 DrawCanvas();
 setInterval(() => {
