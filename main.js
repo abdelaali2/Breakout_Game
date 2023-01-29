@@ -1,9 +1,13 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-const Colors = ["red", "green", "blue"];
+// const Colors = ["red", "black", "blue"];
 const FillColor = "black";
-const BrickWidth = 107;
+const BallRadius = 30;
 const BrickHeight = 50;
+const BrickWidth = 210;
+const dx = 5;
+const dy = 5;
+let BricksArray;
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -37,21 +41,17 @@ class Brick extends Shape {
 }
 
 class Ball extends Shape {
-  constructor({ position, Velocity, width, height }) {
+  constructor({ position, Velocity, width, height, radius }) {
     super({ position, Velocity, width, height });
+    this.radius = radius;
   }
   draw() {
     context.beginPath();
-    context.arc(this.position.x, this.position.y, 20, 0, Math.PI * 2, false);
-    context.fillStyle = "white";
+    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    context.fillStyle = "#0095DD";
     context.fill();
     context.closePath();
   }
-}
-
-function DrawCanvas() {
-  DrawTiles();
-  DrawBall();
 }
 
 function DrawTiles() {
@@ -60,31 +60,47 @@ function DrawTiles() {
       let BrickObject = new Brick({
         position: { x: i, y: j },
         Velocity: { x: 0, y: 0 },
-        width: 107,
-        height: 50,
+        width: BrickWidth,
+        height: BrickHeight,
         radii: 10,
       });
       BrickObject.draw();
-      i += BrickWidth + 20;
+      i += BrickWidth + 10;
     }
     j += BrickHeight + 30;
   }
 }
-function DrawBall() {
-  let GameBall = new Ball({
-    position: { x: canvas.width/2, y: canvas.height-150 },
-    Velocity: { x: 0, y: 0 },
-    width: 150,
-    height: 150,
-  });
+
+let GameBall = new Ball({
+  position: { x: canvas.width / 2, y: canvas.height - 150 },
+  Velocity: { x: 0, y: 0 },
+  width: undefined,
+  height: undefined,
+  radius: BallRadius,
+});
+
+function GenerateBrickColor() {
+  return Colors[Math.floor(Math.random() * Colors.length)];
+}
+
+function UpdateBallPosition() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  console.log(GameBall.position.x);
+  console.log(GameBall.position.y);
+  DrawTiles();
+  GameBall.position.x += dx;
+  GameBall.position.y -= dy;
   GameBall.draw();
 }
 
-// function GenerateBrickColor() {
-//   return Colors[Math.floor(Math.random() * Colors.length)];
-// }
+function DrawCanvas() {
+  DrawTiles();
+  setInterval(() => {
+    console.log("hi from inside the interval function");
+    UpdateBallPosition();
+  }, 10);
+
+  GameBall.draw();
+}
 
 DrawCanvas();
-setInterval(() => {
-  DrawCanvas();
-}, 10000);
