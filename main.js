@@ -111,12 +111,7 @@ class Paddle extends Shape {
 
   draw() {
     context.beginPath();
-    context.rect(
-      this.position.x,
-      this.position.y,
-      this.width,
-      canvas.height - this.height
-    );
+    context.rect(this.position.x, this.position.y, this.width, this.height);
     context.fillStyle = "red";
     context.fill();
     context.closePath();
@@ -124,11 +119,11 @@ class Paddle extends Shape {
 }
 
 let GamePaddle = new Paddle({
-  position: { x: canvas.width / 2, y: canvas.height - 30 },
-  Velocity: { x: 0, y: 0 },
-  width: 150,
-  height: 150,
-});
-GamePaddle.draw();
+    position: { x: canvas.width/2, y: canvas.height-70},
+    Velocity: { x: 0, y: 0 },
+    width: 150,
+    height: 30
+  });
+  GamePaddle.draw();
 
 DrawCanvas();
