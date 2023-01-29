@@ -38,21 +38,25 @@ class Brick extends Shape {
 }
 
 class Ball extends Shape {
-  constructor({ position, Velocity, width, height }) {
+  constructor({ position, Velocity, width, height, radius}) {
     super({ position, Velocity, width, height });
+    this.radius=radius;
   }
   draw() {
     context.beginPath();
-    context.arc(this.position.x, this.position.y, 20, 0, Math.PI * 2, false);
-    context.fillStyle = "white";
+    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
+    context.fillStyle = "#0095DD";
     context.fill();
     context.closePath();
+    // context.beginPath();
+    // context.fill();
+    // context.closePath();
   }
 }
 
 function DrawCanvas() {
   DrawTiles();
-  //DrawBall();
+  DrawBall();
 }
 
 function DrawTiles() {
@@ -71,26 +75,23 @@ function DrawTiles() {
     j += BrickHeight + 30;
   }
 }
-function DrawBall() {
+// function DrawBall() {
   let GameBall = new Ball({
-    position: { x: canvas.width/2, y: canvas.height-150 },
+    position: { x: canvas.width/2, y: canvas.height-130 },
     Velocity: { x: 0, y: 0 },
     width: 150,
     height: 150,
+    radius: 30
   });
-  GameBall.draw();
-}
+//   GameBall.draw();
+// }
 
 // function GenerateBrickColor() {
 //   return Colors[Math.floor(Math.random() * Colors.length)];
 // }
-StartButton.addEventListener("click",Startgame);
-function Startgame()
-{
-  console.log("start game")
-}
 
 DrawCanvas();
 setInterval(() => {
   DrawCanvas();
 }, 10000);
+
