@@ -56,7 +56,7 @@ class Ball extends Shape {
 
 function DrawCanvas() {
   DrawTiles();
-  DrawBall();
+ // DrawBall();
 }
 
 function DrawTiles() {
@@ -76,19 +76,24 @@ function DrawTiles() {
   }
 }
 // function DrawBall() {
-  let GameBall = new Ball({
-    position: { x: canvas.width/2, y: canvas.height-130 },
-    Velocity: { x: 0, y: 0 },
-    width: 150,
-    height: 150,
-    radius: 30
-  });
+  // let GameBall = new Ball({
+  //   position: { x: canvas.width/2, y: canvas.height-130 },
+  //   Velocity: { x: 0, y: 0 },
+  //   width: 150,
+  //   height: 150,
+  //   radius: 30
+  // });
 //   GameBall.draw();
 // }
 
 // function GenerateBrickColor() {
 //   return Colors[Math.floor(Math.random() * Colors.length)];
 // }
+StartButton.addEventListener("click",Startgame);
+function Startgame()
+{
+  console.log("game started");
+}
 
 DrawCanvas();
 setInterval(() => {
