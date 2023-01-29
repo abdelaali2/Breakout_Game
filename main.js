@@ -4,6 +4,7 @@ const Colors = ["red", "green", "blue"];
 const FillColor = "black";
 const BrickWidth = 107;
 const BrickHeight = 50;
+const StartButton=document.getElementById("Startbutton");
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -51,7 +52,7 @@ class Ball extends Shape {
 
 function DrawCanvas() {
   DrawTiles();
-  DrawBall();
+  //DrawBall();
 }
 
 function DrawTiles() {
@@ -83,6 +84,11 @@ function DrawBall() {
 // function GenerateBrickColor() {
 //   return Colors[Math.floor(Math.random() * Colors.length)];
 // }
+StartButton.addEventListener("click",Startgame);
+function Startgame()
+{
+  console.log("start game")
+}
 
 DrawCanvas();
 setInterval(() => {
