@@ -46,8 +46,9 @@ body {
   border-radius: 100%;
   margin-top: 1em;
   font-size: 0.9em;
-
+}
 .popup{
+  display: none;
   background-color: rgba(0, 0, 0, 0.75);
   /* content: "Game Over"; */
   min-width: 100%;

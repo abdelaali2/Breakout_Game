@@ -87,12 +87,18 @@ class Ball extends Shape {
     ) {
       dx = -dx;
     }
-    if (
-      GameBall.position.y + dy > canvas.height - BallRadius ||
-      GameBall.position.y + dy < BallRadius
-    ) {
+    if(GameBall.position.y + dy < BallRadius) {
+      console.log("Game over first if");
       dy = -dy;
-    }
+  }
+  else if(GameBall.position.y + dy > canvas.height-BallRadius) {
+      if(GameBall.position.x > PaddleX && GameBall.position.x < PaddleX + PaddleWidth) {
+          dy = -dy;
+      }
+      else {
+          alert("GAME OVER");
+      }
+  }
     GameBall.position.x += dx;
     GameBall.position.y += dy;
     GameBall.draw();
@@ -179,6 +185,7 @@ class Environment {
     }
   }
   GameOver() {
+
     console.log(this.score);
   }
 }
