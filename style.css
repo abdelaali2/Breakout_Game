@@ -30,8 +30,8 @@ body {
   /* content: "Game Over"; */
   min-width: 100%;
   min-height: 100%;
-  font-size: 3em;
-  color: darkblue;
+  font-size: 7em;
+  color: rgb(165, 131, 56);
   position: absolute;
   z-index: 2;
   margin: 0 auto;
@@ -42,4 +42,7 @@ body {
   bottom: 50%;
   width: 100%;
   text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: oblique;
+
 }
