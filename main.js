@@ -44,7 +44,10 @@ class Shape {
     this.height = height;
   }
   draw() { }
+<<<<<<< HEAD
   move() { }
+=======
+>>>>>>> ae9c7eabe1062da4a83a66a0d965f1c35b6a799e
 }
 
 class Brick extends Shape {
@@ -74,9 +77,11 @@ class Ball extends Shape {
     this.radius = radius;
   }
   draw() {
+    // this.position.x += moveX;
+    // this.position.x += moveY;
     context.beginPath();
     context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = "#0095DD";
+    context.fillStyle = "Black";
     context.fill();
     context.closePath();
   }
@@ -176,6 +181,7 @@ function DrawCanvas() {
   }, 10);
 }
 
+<<<<<<< HEAD
 function DrawBricks() {
   for (let j = 0; j < 12; j++) {
     BricksArray[j] = [];
@@ -184,6 +190,13 @@ function DrawBricks() {
       const BrickY = i * (BrickHeight + BrickPadding) + 10;
       BricksArray[j][i] = new Brick({
         position: { x: BrickX, y: BrickY },
+=======
+function DrawTiles() {
+  for (let j = 20; j < 350; j++) {
+    for (let i = 20; i < canvas.width;) {
+      let BrickObject = new Brick({
+        position: { x: i, y: j },
+>>>>>>> ae9c7eabe1062da4a83a66a0d965f1c35b6a799e
         Velocity: { x: 0, y: 0 },
         width: BrickWidth,
         height: BrickHeight,
