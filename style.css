@@ -39,7 +39,8 @@ body {
   margin-top: 1em;
   font-size: 0.9em;
 }
-.popup {
+.popup{
+  display: none;
   background-color: rgba(0, 0, 0, 0.75);
   min-width: 100%;
   min-height: 100%;
