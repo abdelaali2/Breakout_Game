@@ -51,7 +51,7 @@ class Ball extends Shape {
     // this.position.x += moveY;
     context.beginPath();
     context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = "Black";
+    context.fillStyle = "black";
     context.fill();
     context.closePath();
     // context.beginPath();
@@ -82,7 +82,7 @@ class Paddle extends Shape {
       this.height,
       this.radii
     );
-    context.fillStyle = "red";
+    context.fillStyle = "black";
     context.fill();
     context.closePath();
   }
