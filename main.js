@@ -13,7 +13,7 @@ let BrickObject;
 let RPressed = false;
 let LPressed = false;
 let PaddleX = (canvas.width - PaddleWidth) / 2;
-let PaddleY = (canvas.height - PaddleHeight);
+let PaddleY = canvas.height - PaddleHeight;
 let dx = 5;
 let dy = 5;
 
@@ -22,16 +22,14 @@ document.addEventListener("keyup", KeyUp, false);
 function KeyDown(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
     RPressed = true;
-  }
-  else if (e.key == "Left" || e.key == "ArrowLeft") {
+  } else if (e.key == "Left" || e.key == "ArrowLeft") {
     LPressed = true;
   }
 }
 function KeyUp(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
     RPressed = false;
-  }
-  else if (e.key == "Left" || e.key == "ArrowLeft") {
+  } else if (e.key == "Left" || e.key == "ArrowLeft") {
     LPressed = false;
   }
 }
@@ -43,11 +41,8 @@ class Shape {
     this.width = width;
     this.height = height;
   }
-  draw() { }
-<<<<<<< HEAD
-  move() { }
-=======
->>>>>>> ae9c7eabe1062da4a83a66a0d965f1c35b6a799e
+  draw() {}
+  move() {}
 }
 
 class Brick extends Shape {
@@ -77,35 +72,31 @@ class Ball extends Shape {
     this.radius = radius;
   }
   draw() {
-    // this.position.x += moveX;
-    // this.position.x += moveY;
     context.beginPath();
     context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = "Black";
+    context.fillStyle = "#0095DD";
     context.fill();
     context.closePath();
   }
-  move()
-  {
+  move() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-  DrawBricks();
-  if (
-    GameBall.position.x + dx > canvas.width - BallRadius ||
-    GameBall.position.x + dx < BallRadius
-  ) {
-    dx = -dx;
-  }
-  if (
-    GameBall.position.y + dy > canvas.height - BallRadius ||
-    GameBall.position.y + dy < BallRadius
-  ) {
-    dy = -dy;
-  }
-  GameBall.position.x += dx;
-  GameBall.position.y += dy;
-  GameBall.draw();
-  GamePaddle.draw();
-
+    DrawBricks();
+    if (
+      GameBall.position.x + dx > canvas.width - BallRadius ||
+      GameBall.position.x + dx < BallRadius
+    ) {
+      dx = -dx;
+    }
+    if (
+      GameBall.position.y + dy > canvas.height - BallRadius ||
+      GameBall.position.y + dy < BallRadius
+    ) {
+      dy = -dy;
+    }
+    GameBall.position.x += dx;
+    GameBall.position.y += dy;
+    GameBall.draw();
+    GamePaddle.draw();
   }
 }
 
@@ -135,8 +126,7 @@ class Paddle extends Shape {
     context.fill();
     context.closePath();
   }
-  move()
-  {
+  move() {
     if (RPressed) {
       console.log("you pressed right");
       PaddleX += 7;
@@ -145,8 +135,7 @@ class Paddle extends Shape {
       if (PaddleX + PaddleWidth > canvas.width - 10) {
         PaddleX = canvas.width - PaddleWidth - 20;
       }
-    }
-    else if (LPressed) {
+    } else if (LPressed) {
       console.log("you pressed left");
       console.log(PaddleX);
       PaddleX -= 7;
@@ -167,12 +156,42 @@ let GamePaddle = new Paddle({
   height: PaddleHeight,
 });
 
+class Environment {
+  constructor() {
+    this.life = 3;
+    this.score = 0;
+    this.isON = false;
+    this.StartCountdown = 3;
+    this.StartCountdownTimerID;
+  }
+  GameStart() {
+    this.StartCountdownTimerID = setInterval(countdown, 970);
+    if (!this.isON) {
+      function countdown() {
+        if (this.StartCountdown == 0) {
+          isON = true;
+          clearTimeout(this.StartCountdownTimerID);
+        } else {
+          this.StartCountdown--;
+          StartButton.innerText = this.StartCountdown;
+        }
+      }
+    }
+  }
+  GameOver() {
+    console.log(this.score);
+  }
+}
+
+let GameEnvironment = new Environment();
+
 function GameMovement() {
- GamePaddle.move();
- GameBall.move();
+  GamePaddle.move();
+  GameBall.move();
 }
 
 function DrawCanvas() {
+  StartButton.addEventListener("click", GameEnvironment.GameStart);
   GamePaddle.draw();
   DrawBricks();
   GameBall.draw();
@@ -181,7 +200,6 @@ function DrawCanvas() {
   }, 10);
 }
 
-<<<<<<< HEAD
 function DrawBricks() {
   for (let j = 0; j < 12; j++) {
     BricksArray[j] = [];
@@ -190,13 +208,6 @@ function DrawBricks() {
       const BrickY = i * (BrickHeight + BrickPadding) + 10;
       BricksArray[j][i] = new Brick({
         position: { x: BrickX, y: BrickY },
-=======
-function DrawTiles() {
-  for (let j = 20; j < 350; j++) {
-    for (let i = 20; i < canvas.width;) {
-      let BrickObject = new Brick({
-        position: { x: i, y: j },
->>>>>>> ae9c7eabe1062da4a83a66a0d965f1c35b6a799e
         Velocity: { x: 0, y: 0 },
         width: BrickWidth,
         height: BrickHeight,
