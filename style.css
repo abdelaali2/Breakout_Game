@@ -24,3 +24,22 @@ body {
   margin-top: 1em;
   border-radius: 3px;
 }
+
+.popup{
+  background-color: rgba(0, 0, 0, 0.75);
+  /* content: "Game Over"; */
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 3em;
+  color: darkblue;
+  position: absolute;
+  z-index: 2;
+  margin: 0 auto;
+}
+
+#text {
+  position: absolute;
+  bottom: 50%;
+  width: 100%;
+  text-align: center;
+}

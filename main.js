@@ -51,7 +51,7 @@ class Ball extends Shape {
     // this.position.x += moveY;
     context.beginPath();
     context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = "#0095DD";
+    context.fillStyle = "Black";
     context.fill();
     context.closePath();
     // context.beginPath();
