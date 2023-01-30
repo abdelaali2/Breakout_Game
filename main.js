@@ -41,8 +41,8 @@ class Shape {
     this.width = width;
     this.height = height;
   }
-  draw() {}
-  move() {}
+  draw() { }
+  move() { }
 }
 
 class Brick extends Shape {
@@ -66,53 +66,6 @@ class Brick extends Shape {
   }
 }
 
-class Ball extends Shape {
-  constructor({ position, Velocity, width, height, radius }) {
-    super({ position, Velocity, width, height });
-    this.radius = radius;
-  }
-  draw() {
-    context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = "#0095DD";
-    context.fill();
-    context.closePath();
-  }
-  move() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    DrawBricks();
-    if (
-      GameBall.position.x + dx > canvas.width - BallRadius ||
-      GameBall.position.x + dx < BallRadius
-    ) {
-      dx = -dx;
-    }
-    if(GameBall.position.y + dy < BallRadius) {
-      console.log("Game over first if");
-      dy = -dy;
-  }
-  else if(GameBall.position.y + dy > canvas.height-BallRadius) {
-      if(GameBall.position.x > PaddleX && GameBall.position.x < PaddleX + PaddleWidth) {
-          dy = -dy;
-      }
-      else {
-          alert("GAME OVER");
-      }
-  }
-    GameBall.position.x += dx;
-    GameBall.position.y += dy;
-    GameBall.draw();
-    GamePaddle.draw();
-  }
-}
-
-let GameBall = new Ball({
-  position: { x: canvas.width / 2, y: canvas.height - 80 },
-  Velocity: { x: 0, y: 0 },
-  width: undefined,
-  height: undefined,
-  radius: BallRadius,
-});
 
 class Paddle extends Shape {
   constructor({ position, Velocity, width, height }) {
@@ -134,16 +87,16 @@ class Paddle extends Shape {
   }
   move() {
     if (RPressed) {
-      console.log("you pressed right");
+      //console.log("you pressed right");
       PaddleX += 7;
       GamePaddle.position.x = PaddleX;
-      console.log(PaddleX);
+      //console.log(PaddleX);
       if (PaddleX + PaddleWidth > canvas.width - 10) {
         PaddleX = canvas.width - PaddleWidth - 20;
       }
     } else if (LPressed) {
-      console.log("you pressed left");
-      console.log(PaddleX);
+      //console.log("you pressed left");
+      //console.log(PaddleX);
       PaddleX -= 7;
       GamePaddle.position.x = PaddleX;
       if (PaddleX < 10) {
@@ -160,6 +113,60 @@ let GamePaddle = new Paddle({
   Velocity: { x: 0, y: 0 },
   width: PaddleWidth,
   height: PaddleHeight,
+});
+class Ball extends Shape {
+  constructor({ position, Velocity, width, height, radius }) {
+    super({ position, Velocity, width, height });
+    this.radius = radius;
+  }
+  draw() {
+    context.beginPath();
+    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    context.fillStyle = "#0095DD";
+    context.fill();
+    context.closePath();
+  }
+  move() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    DrawBricks();
+    if (
+      GameBall.position.x + dx > canvas.width - BallRadius ||
+      GameBall.position.x + dx < BallRadius
+    ) {
+      //console.log("inside first if x");
+      dx = -dx;
+    }
+    if (GameBall.position.y + dy < BallRadius) {
+      //console.log("inside first if y");
+      dy = -dy;
+
+    }
+    else if (GameBall.position.y + dy > canvas.height - GamePaddle.height - GameBall.radius - 45) {
+      //console.log(GamePaddle.position.y);
+      //console.log("inside first else if x");
+      if (GameBall.position.x >= PaddleX -BallRadius && GameBall.position.x <= PaddleX + PaddleWidth +BallRadius) {
+        dy = -dy;
+        GameBall.position.y -= dy;
+      }
+      else {
+        // DrawCanvas();
+        GameBall.position = { x: canvas.width / 2, y: canvas.height+25};
+        GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
+      }
+    }
+    GameBall.position.x += dx;
+    GameBall.position.y += dy;
+    GameBall.draw();
+    GamePaddle.draw();
+  }
+}
+
+let GameBall = new Ball({
+  position: { x: canvas.width / 2, y: canvas.height - 400 - 80 },
+  Velocity: { x: 0, y: 0 },
+  width: undefined,
+  height: undefined,
+  radius: BallRadius,
 });
 
 class Environment {
