@@ -24,6 +24,28 @@ body {
   margin-top: 1em;
   border-radius: 3px;
 }
+#Score
+{
+  float: left;
+  margin-left: 5em;
+  font-size: 2em;
+  margin-top: 1em;
+
+}
+#Lives
+{
+  float: right;
+  margin-right: 5em;
+  font-size: 2em;
+  margin-top: 1em;
+}
+#Startbutton
+{
+  width: 7em;
+  height: 7em;
+  border-radius: 100%;
+  margin-top: 1em;
+  font-size: 0.9em;
 
 .popup{
   background-color: rgba(0, 0, 0, 0.75);

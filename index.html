@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Breakout Game</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="./style.css" rel="stylesheet">
-    <script src="./main.js" defer></script>
-</head>
-
-<body>
-    <div class="popup">
-     <p id="text">Game Over</p>
-    </div>
-    <canvas id="myCanvas" width="2660" height="1080" style="border:1px solid #c3c3c3;"></canvas>
-</body>
+    <head>
+        <title>Breakout Game</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="./style.css" rel="stylesheet">
+        <script src="./main.js" defer></script>
+    </head>
+    <body>
+        <nav>
+            <div id="Score">
+                Score: 0
+            </div>
+            <div id="Lives">
+                Lives: Full
+            </div>
+            <button id="Startbutton">Start</button>
+        </nav>
+        <div class="popup">
+            <p id="text">Game Over</p>
+        </div>
+        <canvas id="myCanvas" width="2660" height="1080" style="border:1px solid
+            #c3c3c3;"></canvas>
+    </body>
 
 </html>
