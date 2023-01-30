@@ -162,7 +162,7 @@ let GamePaddle = new Paddle({
   height: PaddleHeight,
 });
 
-function GameMovment() {
+function GameMovement() {
  GamePaddle.move();
  GameBall.move();
 }
@@ -172,7 +172,7 @@ function DrawCanvas() {
   DrawBricks();
   GameBall.draw();
   setInterval(() => {
-    GameMovment();
+    GameMovement();
   }, 10);
 }
 
