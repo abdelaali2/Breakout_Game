@@ -1,6 +1,7 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
 const FillColor = "beige";
+const DimmedColor = "rgba(245, 245, 220,0.75)"
 const BallRadius = 20;
 const BrickHeight = 50;
 const StartButton = document.getElementById("Startbutton");
@@ -46,7 +47,7 @@ class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
     this.radii = 5;
-    this.life = 1;
+    this.life = 2;
   }
   draw() {
     if (this.life === 2) {
@@ -265,7 +266,7 @@ class Environment {
   }
 }
 
-let GameEnvironment = new Environment();
+let Game = new Environment();
 
 function GameMovement() {
   context.clearRect(0, 0, canvas.width, canvas.height);

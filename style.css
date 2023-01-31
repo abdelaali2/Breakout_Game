@@ -3,8 +3,8 @@
   padding: 0;
   box-sizing: border-box;
   vertical-align: middle;
-  font-family: "Times New Roman", Times, serif;
-
+  font-family:'Courier New', Courier, monospace;
+  font-weight: bolder;
 }
 
 body {
@@ -36,25 +36,28 @@ background-color: rgba(0, 0, 0, 0.1);
 {
   float: left;
   margin-left: 5em;
-  font-size: 2em;
+  font-size: 2.5em;
   margin-top: 1em;
-  color: white;
+  color: beige;
 }
 #Lives
 {
   float: right;
   margin-right: 5em;
-  font-size: 2em;
+  font-size: 2.5em;
   margin-top: 1em;
-  color: white;
+  color: beige;
 }
 #Startbutton
 {
   width: 7em;
   height: 7em;
   border-radius: 100%;
+  border-color: #f42279;
   margin-top: 1em;
-  font-size: 0.9em;
+  font-size: 1em;
+  background-color: antiquewhite;
+  cursor:pointer
 }
 .popup{
   display: none;
