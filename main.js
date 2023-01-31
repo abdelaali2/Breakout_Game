@@ -1,7 +1,7 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-const FillColor = "black";
-const DimmedColor = "rgba(0,0,0,0.2)";
+const FillColor = "#F1D3B3";
+const DimmedColor = "rgba(240, 233, 210,0.7)"
 const BallRadius = 20;
 const BrickHeight = 50;
 const StartButton = document.getElementById("Startbutton");
@@ -61,7 +61,7 @@ class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
     this.radii = 5;
-    this.life = 1;
+    this.life = 2;
   }
   draw() {
     if (this.life === 2) {
@@ -170,17 +170,22 @@ class Ball extends Shape {
         GameBall.position.x >= PaddleX - BallRadius &&
         GameBall.position.x <= PaddleX + PaddleWidth + BallRadius
       ) {
+        const collisonX = Math.abs(GameBall.position.x - GamePaddle.position.x);
+        const distanceToMiddle = collisonX - PaddleWidth / 2;
+        GameBall.Velocity.x = distanceToMiddle / 32;
         GameBall.Velocity.y = -GameBall.Velocity.y;
         GameBall.position.y -= GameBall.Velocity.y;
       } else {
         GameBall.position = { x: canvas.width / 2, y: canvas.height + 25 };
         GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
-        console.log("you lost");
+        // console.log("you lost");
         Game.decreaseLife();
         Lives.innerHTML=`Lives: ${Game.life}`;
         //gameover() //stops the game
 
       }
+    } else if (GameBall.position.y + GameBall.Velocity.y > canvas.height){
+      alert ("you hit rock bottom");
     }
     GameBall.position.x += GameBall.Velocity.x;
     GameBall.position.y += GameBall.Velocity.y;
@@ -317,6 +322,8 @@ function GameMovement() {
   Game.collisionDetection();
   GamePaddle.move();
   GameBall.move();
+  Game.requestID = requestAnimationFrame(GameMovement);
+  // return;
 }
 
 let testbrick = new Brick({
@@ -330,14 +337,15 @@ let testbrick = new Brick({
 // testbrick.draw();
 StartButton.addEventListener("click", Game.GameStart);
 function DrawCanvas() {
-  
+  StartButton.addEventListener("click", Game.GameStart);
+  cancelAnimationFrame(Game.requestID);
   Game.DrawBricks();
   GamePaddle.draw();
   GameBall.draw();
   // Game.GameStart();
-  setInterval(() => {
-    GameMovement();
-  }, 10);
+  // setInterval(() => {
+  GameMovement();
+  // }, 10);
 }
 
 
