@@ -1,7 +1,7 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-const FillColor = "beige";
-const DimmedColor = "rgba(245, 245, 220,0.75)";
+const FillColor = "#F1D3B3";
+const DimmedColor = "rgba(240, 233, 210,0.7)"
 const BallRadius = 20;
 const BrickHeight = 50;
 const StartButton = document.getElementById("Startbutton");
