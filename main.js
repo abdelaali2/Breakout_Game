@@ -1,7 +1,7 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
 const FillColor = "beige";
-const DimmedColor = "rgba(245, 245, 220,0.75)"
+const DimmedColor = "rgba(245, 245, 220,0.75)";
 const BallRadius = 20;
 const BrickHeight = 50;
 const StartButton = document.getElementById("Startbutton");
@@ -47,7 +47,7 @@ class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
     this.radii = 5;
-    this.life = 2;
+    this.life = 1;
   }
   draw() {
     if (this.life === 2) {
@@ -96,7 +96,7 @@ class Paddle extends Shape {
       this.height,
       this.radii
     );
-    context.fillStyle = "#f42279";
+    context.fillStyle = "red";
     context.fill();
     context.closePath();
   }
@@ -156,12 +156,17 @@ class Ball extends Shape {
         GameBall.position.x >= PaddleX - BallRadius &&
         GameBall.position.x <= PaddleX + PaddleWidth + BallRadius
       ) {
+        const collisonX = Math.abs(GameBall.position.x - GamePaddle.position.x);
+        const distanceToMiddle = collisonX - PaddleWidth / 2;
+        GameBall.Velocity.x = distanceToMiddle / 32;
         GameBall.Velocity.y = -GameBall.Velocity.y;
         GameBall.position.y -= GameBall.Velocity.y;
       } else {
         GameBall.position = { x: canvas.width / 2, y: canvas.height + 25 };
         GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
       }
+    } else if (GameBall.position.y + GameBall.Velocity.y > canvas.height){
+      alert ("you hit rock bottom");
     }
     GameBall.position.x += GameBall.Velocity.x;
     GameBall.position.y += GameBall.Velocity.y;
@@ -185,6 +190,7 @@ class Environment {
     this.isON = false;
     this.StartCountdown = 3;
     this.StartCountdownTimerID;
+    this.requestID;
   }
   GameStart() {
     StartButton.innerText = this.StartCountdown;
@@ -199,7 +205,9 @@ class Environment {
           clearTimeout(this.StartCountdownTimerID);
         } else {
           this.StartCountdown--;
-          console.log(`in countdown function else condition${this.StartCountdown}`);
+          console.log(
+            `in countdown function else condition${this.StartCountdown}`
+          );
           StartButton.innerText = this.StartCountdown;
         }
       }
@@ -273,6 +281,8 @@ function GameMovement() {
   Game.collisionDetection();
   GamePaddle.move();
   GameBall.move();
+  Game.requestID = requestAnimationFrame(GameMovement);
+  // return;
 }
 
 let testbrick = new Brick({
@@ -287,31 +297,14 @@ let testbrick = new Brick({
 
 function DrawCanvas() {
   StartButton.addEventListener("click", Game.GameStart);
+  cancelAnimationFrame(Game.requestID);
   Game.DrawBricks();
   GamePaddle.draw();
   GameBall.draw();
   // Game.GameStart();
-  setInterval(() => {
-    GameMovement();
-  }, 10);
-}
-
-function DrawBricks() {
-  for (let j = 0; j < 12; j++) {
-    BricksArray[j] = [];
-    for (let i = 0; i < 5; i++) {
-      const BrickX = j * (BrickWidth + BrickPadding) + 25;
-      const BrickY = i * (BrickHeight + BrickPadding) + 10;
-      BricksArray[j][i] = new Brick({
-        position: { x: BrickX, y: BrickY },
-        Velocity: { x: 0, y: 0 },
-        width: BrickWidth,
-        height: BrickHeight,
-        radii: 10,
-      });
-      BricksArray[j][i].draw();
-    }
-  }
+  // setInterval(() => {
+  GameMovement();
+  // }, 10);
 }
 
 DrawCanvas();
