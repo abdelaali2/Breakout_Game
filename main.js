@@ -21,6 +21,7 @@ let PaddleY = canvas.height - PaddleHeight;
 
 document.addEventListener("keydown", KeyDown, false);
 document.addEventListener("keyup", KeyUp, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
 
 function delay(s) {
   let x;
@@ -43,6 +44,14 @@ function KeyUp(e) {
     RPressed = false;
   } else if (e.key == "Left" || e.key == "ArrowLeft") {
     LPressed = false;
+  }
+}
+
+
+function mouseMoveHandler(e) {
+  var relativeX = e.clientX - canvas.offsetLeft;
+  if(relativeX > 0 && relativeX < canvas.width) {
+    PaddleX = relativeX - PaddleWidth/2;
   }
 }
 
@@ -110,7 +119,7 @@ class Paddle extends Shape {
       this.height,
       this.radii
     );
-    context.fillStyle = "red";
+    context.fillStyle = "#f42279";
     context.fill();
     context.closePath();
   }
