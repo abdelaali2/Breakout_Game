@@ -300,7 +300,7 @@ GamePause()
             this.score++;
             Score.innerHTML=`Score: ${this.score}`;
           }
-          if (this.score===12*5)
+          if (this.score===60)
           {
             console.log("you win");
           }
