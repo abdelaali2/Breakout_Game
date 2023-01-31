@@ -10,6 +10,10 @@ const BrickPadding = 30;
 const PaddleWidth = 300;
 const PaddleHeight = 40;
 const BricksArray = [];
+let DestroyedBricks = 0;
+let LivesCountDown=3;
+let Score=document.getElementById("Score");
+let Lives=document.getElementById("Lives");
 let RPressed = false;
 let LPressed = false;
 let PaddleX = (canvas.width - PaddleWidth) / 2;
@@ -17,6 +21,16 @@ let PaddleY = canvas.height - PaddleHeight;
 
 document.addEventListener("keydown", KeyDown, false);
 document.addEventListener("keyup", KeyUp, false);
+
+function delay(s) {
+  let x;
+  for (x=0;x<s;x++)
+  {
+
+  }
+    
+}
+
 function KeyDown(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
     RPressed = true;
@@ -164,6 +178,11 @@ class Ball extends Shape {
       } else {
         GameBall.position = { x: canvas.width / 2, y: canvas.height + 25 };
         GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
+        console.log("you lost");
+        Game.decreaseLife();
+        Lives.innerHTML=`Lives: ${Game.life}`;
+        //gameover() //stops the game
+
       }
     } else if (GameBall.position.y + GameBall.Velocity.y > canvas.height){
       alert ("you hit rock bottom");
@@ -184,35 +203,46 @@ let GameBall = new Ball({
 });
 
 class Environment {
+  
   constructor() {
     this.life = 3;
     this.score = 0;
     this.isON = false;
-    this.StartCountdown = 3;
-    this.StartCountdownTimerID;
-    this.requestID;
+    
+    
   }
+  
+  
   GameStart() {
-    StartButton.innerText = this.StartCountdown;
-    console.log(`in gamestart function ${this.StartCountdown}`);
+    let StartCountdown=3;
+
+  let StartCountdownTimerID; 
+ 
+    StartButton.innerHTML = `${StartCountdown}`;
+    console.log(`in gamestart function ${StartCountdown}`);
     if (!this.isON) {
-      console.log(`in first if function ${this.StartCountdown}`);
-      this.StartCountdownTimerID = setInterval(countdown, 970);
+      console.log(`in first if function ${StartCountdown}`);
+      StartCountdownTimerID = setInterval(countdown, 970);
       function countdown() {
-        console.log(`in countdown function ${this.StartCountdown}`);
-        if (this.StartCountdown == 0) {
-          isON = true;
-          clearTimeout(this.StartCountdownTimerID);
+        console.log(`in countdown function ${StartCountdown}`);
+        if (StartCountdown == 1) {
+          StartButton.innerHTML="Pause";
+          this.isON = true;
+          clearInterval(StartCountdownTimerID);
+          DrawCanvas();
         } else {
-          this.StartCountdown--;
-          console.log(
-            `in countdown function else condition${this.StartCountdown}`
-          );
-          StartButton.innerText = this.StartCountdown;
+          StartCountdown--;
+          console.log(`in countdown function else condition${StartCountdown}`);
+          StartButton.innerHTML = `${StartCountdown}`;
         }
       }
     }
-  }
+}
+GamePause()
+{
+
+}
+
   GameOver() {
     console.log(this.score);
   }
@@ -267,15 +297,26 @@ class Environment {
               GameBall.Velocity.x = -GameBall.Velocity.x;
             }
             CurrentBrick.decreaseLife();
+            this.score++;
+            Score.innerHTML=`Score: ${this.score}`;
+          }
+          if (this.score===12*5)
+          {
+            console.log("you win");
           }
         }
       }
     }
   }
+  decreaseLife()
+  {
+    if (this.life){
+    this.life--;
+    }
+  }
 }
 
 let Game = new Environment();
-
 function GameMovement() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   Game.collisionDetection();
@@ -294,7 +335,7 @@ let testbrick = new Brick({
 });
 
 // testbrick.draw();
-
+StartButton.addEventListener("click", Game.GameStart);
 function DrawCanvas() {
   StartButton.addEventListener("click", Game.GameStart);
   cancelAnimationFrame(Game.requestID);
@@ -307,4 +348,4 @@ function DrawCanvas() {
   // }, 10);
 }
 
-DrawCanvas();
+
