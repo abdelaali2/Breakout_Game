@@ -110,7 +110,7 @@ class Paddle extends Shape {
       this.height,
       this.radii
     );
-    context.fillStyle = "red";
+    context.fillStyle = "black";
     context.fill();
     context.closePath();
   }
@@ -347,5 +347,29 @@ function DrawCanvas() {
   GameMovement();
   // }, 10);
 }
+
+function DrawBricks() {
+  for (let j = 0; j < 12; j++) {
+    BricksArray[j] = [];
+    for (let i = 0; i < 5; i++) {
+      const BrickX = j * (BrickWidth + BrickPadding) + 25;
+      const BrickY = i * (BrickHeight + BrickPadding) + 10;
+      BricksArray[j][i] = new Brick({
+        position: { x: BrickX, y: BrickY },
+        Velocity: { x: 0, y: 0 },
+        width: BrickWidth,
+        height: BrickHeight,
+        radii: 10,
+      });
+      BricksArray[j][i].draw();
+    }
+  }
+}
+
+var GameOverSound = document.getElementById("GameOverSound");
+var WinSound= document.getElementById("WinSound");
+GameOverSound.play();
+WinSound.play();
+
 
 

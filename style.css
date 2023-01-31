@@ -70,6 +70,7 @@ background-color: rgba(0, 0, 0, 0.1);
   position: absolute;
   z-index: 2;
   margin: 0 auto;
+  display:none;
 }
 
 #text {
@@ -79,5 +80,13 @@ background-color: rgba(0, 0, 0, 0.1);
   text-align: center;
   font-family: 'Times New Roman', Times, serif;
   font-style: oblique;
+}
 
+#GameOverSound{
+  display: none;
+
+}
+
+#WinSound{
+display:none;
 }
