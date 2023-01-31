@@ -61,7 +61,7 @@ class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
     this.radii = 5;
-    this.life = 1;
+    this.life = 2;
   }
   draw() {
     if (this.life === 2) {
@@ -178,7 +178,7 @@ class Ball extends Shape {
       } else {
         GameBall.position = { x: canvas.width / 2, y: canvas.height + 25 };
         GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
-        console.log("you lost");
+        // console.log("you lost");
         Game.decreaseLife();
         Lives.innerHTML=`Lives: ${Game.life}`;
         //gameover() //stops the game
