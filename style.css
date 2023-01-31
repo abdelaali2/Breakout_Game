@@ -3,11 +3,20 @@
   padding: 0;
   box-sizing: border-box;
   vertical-align: middle;
+
   font-family: "Times New Roman", Times, serif;
 }
-
+.arcade_img {
+  background-image: url("arcade.jpeg");
+  background-color: black;
+  height: 500px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
 body {
-  background: linear-gradient(to bottom, #ffffff, #ffefba);
+
   min-width: 100%;
   min-height: 100vh;
   text-align: center;
@@ -20,27 +29,33 @@ body {
   margin-top: 1em;
   border-radius: 3px;
 }
-#Score {
+#Score
+{
   float: left;
   margin-left: 5em;
   font-size: 2em;
   margin-top: 1em;
+
 }
-#Lives {
+#Lives
+{
   float: right;
   margin-right: 5em;
   font-size: 2em;
   margin-top: 1em;
 }
-#Startbutton {
+#Startbutton
+{
   width: 7em;
   height: 7em;
   border-radius: 100%;
   margin-top: 1em;
   font-size: 0.9em;
 }
-.popup {
+.popup{
+  display: none;
   background-color: rgba(0, 0, 0, 0.75);
+  /* content: "Game Over"; */
   min-width: 100%;
   min-height: 100%;
   font-size: 7em;
@@ -48,7 +63,6 @@ body {
   position: absolute;
   z-index: 2;
   margin: 0 auto;
-  display: none;
 }
 
 #text {
@@ -56,6 +70,7 @@ body {
   bottom: 50%;
   width: 100%;
   text-align: center;
-  font-family: "Times New Roman", Times, serif;
+  font-family: 'Times New Roman', Times, serif;
   font-style: oblique;
+
 }
