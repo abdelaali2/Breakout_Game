@@ -9,13 +9,10 @@ const BrickPadding = 30;
 const PaddleWidth = 300;
 const PaddleHeight = 40;
 const BricksArray = [];
-let BrickObject;
 let RPressed = false;
 let LPressed = false;
 let PaddleX = (canvas.width - PaddleWidth) / 2;
 let PaddleY = canvas.height - PaddleHeight;
-let dx = 5;
-let dy = 5;
 
 document.addEventListener("keydown", KeyDown, false);
 document.addEventListener("keyup", KeyUp, false);
@@ -41,8 +38,8 @@ class Shape {
     this.width = width;
     this.height = height;
   }
-  draw() { }
-  move() { }
+  draw() {}
+  move() {}
 }
 
 class Brick extends Shape {
@@ -52,20 +49,37 @@ class Brick extends Shape {
     this.life = 1;
   }
   draw() {
-    context.beginPath();
-    context.roundRect(
-      this.position.x,
-      this.position.y,
-      this.width,
-      this.height,
-      this.radii
-    );
-    context.fillStyle = FillColor;
-    context.fill();
+    if (this.life === 2) {
+      context.beginPath();
+      context.roundRect(
+        this.position.x,
+        this.position.y,
+        this.width,
+        this.height,
+        this.radii
+      );
+      context.fillStyle = FillColor;
+      context.fill();
+    } else if (this.life === 1) {
+      context.beginPath();
+      context.roundRect(
+        this.position.x,
+        this.position.y,
+        this.width,
+        this.height,
+        this.radii
+      );
+      context.fillStyle = DimmedColor;
+      context.fill();
+    }
     context.closePath();
   }
+  decreaseLife() {
+    if (this.life) {
+      this.life--;
+    }
+  }
 }
-
 
 class Paddle extends Shape {
   constructor({ position, Velocity, width, height }) {
@@ -86,17 +100,15 @@ class Paddle extends Shape {
     context.closePath();
   }
   move() {
+    if (Game.isON) {
+    }
     if (RPressed) {
-      //console.log("you pressed right");
       PaddleX += 7;
       GamePaddle.position.x = PaddleX;
-      //console.log(PaddleX);
       if (PaddleX + PaddleWidth > canvas.width - 10) {
         PaddleX = canvas.width - PaddleWidth - 20;
       }
     } else if (LPressed) {
-      //console.log("you pressed left");
-      //console.log(PaddleX);
       PaddleX -= 7;
       GamePaddle.position.x = PaddleX;
       if (PaddleX < 10) {
@@ -127,43 +139,39 @@ class Ball extends Shape {
     context.closePath();
   }
   move() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    DrawBricks();
     if (
-      GameBall.position.x + dx > canvas.width - BallRadius ||
-      GameBall.position.x + dx < BallRadius
+      GameBall.position.x + GameBall.Velocity.x > canvas.width - BallRadius ||
+      GameBall.position.x + GameBall.Velocity.x < BallRadius
     ) {
-      //console.log("inside first if x");
-      dx = -dx;
+      GameBall.Velocity.x = -GameBall.Velocity.x;
     }
-    if (GameBall.position.y + dy < BallRadius) {
-      //console.log("inside first if y");
-      dy = -dy;
-
-    }
-    else if (GameBall.position.y + dy > canvas.height - GamePaddle.height - GameBall.radius - 45) {
-      //console.log(GamePaddle.position.y);
-      //console.log("inside first else if x");
-      if (GameBall.position.x >= PaddleX -BallRadius && GameBall.position.x <= PaddleX + PaddleWidth +BallRadius) {
-        dy = -dy;
-        GameBall.position.y -= dy;
-      }
-      else {
-        // DrawCanvas();
-        GameBall.position = { x: canvas.width / 2, y: canvas.height+25};
+    if (GameBall.position.y + GameBall.Velocity.y < BallRadius) {
+      GameBall.Velocity.y = -GameBall.Velocity.y;
+    } else if (
+      GameBall.position.y + GameBall.Velocity.y >
+      canvas.height - GamePaddle.height - GameBall.radius - 45
+    ) {
+      if (
+        GameBall.position.x >= PaddleX - BallRadius &&
+        GameBall.position.x <= PaddleX + PaddleWidth + BallRadius
+      ) {
+        GameBall.Velocity.y = -GameBall.Velocity.y;
+        GameBall.position.y -= GameBall.Velocity.y;
+      } else {
+        GameBall.position = { x: canvas.width / 2, y: canvas.height + 25 };
         GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
       }
     }
-    GameBall.position.x += dx;
-    GameBall.position.y += dy;
+    GameBall.position.x += GameBall.Velocity.x;
+    GameBall.position.y += GameBall.Velocity.y;
     GameBall.draw();
     GamePaddle.draw();
   }
 }
 
 let GameBall = new Ball({
-  position: { x: canvas.width / 2, y: canvas.height - 400 - 80 },
-  Velocity: { x: 0, y: 0 },
+  position: { x: 1000, y: canvas.height - 450 },
+  Velocity: { x: 5, y: 5 },
   width: undefined,
   height: undefined,
   radius: BallRadius,
@@ -178,37 +186,110 @@ class Environment {
     this.StartCountdownTimerID;
   }
   GameStart() {
-    this.StartCountdownTimerID = setInterval(countdown, 970);
+    StartButton.innerText = this.StartCountdown;
+    console.log(`in gamestart function ${this.StartCountdown}`);
     if (!this.isON) {
+      console.log(`in first if function ${this.StartCountdown}`);
+      this.StartCountdownTimerID = setInterval(countdown, 970);
       function countdown() {
+        console.log(`in countdown function ${this.StartCountdown}`);
         if (this.StartCountdown == 0) {
           isON = true;
           clearTimeout(this.StartCountdownTimerID);
         } else {
           this.StartCountdown--;
+          console.log(`in countdown function else condition${this.StartCountdown}`);
           StartButton.innerText = this.StartCountdown;
         }
       }
     }
   }
   GameOver() {
-
     console.log(this.score);
+  }
+
+  DrawBricks() {
+    for (let j = 0; j < 12; j++) {
+      BricksArray[j] = [];
+      for (let i = 0; i < 5; i++) {
+        const BrickX = j * (BrickWidth + BrickPadding) + 25;
+        const BrickY = i * (BrickHeight + BrickPadding) + 10;
+        BricksArray[j][i] = new Brick({
+          position: { x: BrickX, y: BrickY },
+          Velocity: { x: 0, y: 0 },
+          width: BrickWidth,
+          height: BrickHeight,
+          radii: 10,
+        });
+        BricksArray[j][i].draw();
+      }
+    }
+  }
+
+  collisionDetection() {
+    for (let j = 0; j < 12; j++) {
+      for (let i = 0; i < 5; i++) {
+        const CurrentBrick = BricksArray[j][i];
+        CurrentBrick.draw();
+        if (CurrentBrick.life) {
+          const BallBrickOverlapX =
+            GameBall.position.x >= CurrentBrick.position.x - BallRadius &&
+            GameBall.position.x <=
+              CurrentBrick.position.x + BrickWidth + BallRadius;
+          const BallBrickOverlapY =
+            GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
+            GameBall.position.y <=
+              CurrentBrick.position.y + CurrentBrick.height + BallRadius;
+          if (BallBrickOverlapX && BallBrickOverlapY) {
+            if (
+              GameBall.position.x === CurrentBrick.position.x - BallRadius ||
+              GameBall.position.x ===
+                CurrentBrick.position.x + BrickWidth + BallRadius
+            ) {
+              GameBall.Velocity.x = -GameBall.Velocity.x;
+            } else if (
+              GameBall.position.y === CurrentBrick.position.y - BallRadius ||
+              GameBall.position.y ===
+                CurrentBrick.position.y + CurrentBrick.height + BallRadius
+            ) {
+              GameBall.Velocity.y = -GameBall.Velocity.y;
+            } else {
+              GameBall.Velocity.y = -GameBall.Velocity.y;
+              GameBall.Velocity.x = -GameBall.Velocity.x;
+            }
+            CurrentBrick.decreaseLife();
+          }
+        }
+      }
+    }
   }
 }
 
 let GameEnvironment = new Environment();
 
 function GameMovement() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  Game.collisionDetection();
   GamePaddle.move();
   GameBall.move();
 }
 
+let testbrick = new Brick({
+  position: { x: canvas.width / 2, y: canvas.height / 2 },
+  Velocity: { x: 0, y: 0 },
+  width: BrickWidth,
+  height: BrickHeight,
+  radii: 10,
+});
+
+// testbrick.draw();
+
 function DrawCanvas() {
-  StartButton.addEventListener("click", GameEnvironment.GameStart);
+  StartButton.addEventListener("click", Game.GameStart);
+  Game.DrawBricks();
   GamePaddle.draw();
-  DrawBricks();
   GameBall.draw();
+  // Game.GameStart();
   setInterval(() => {
     GameMovement();
   }, 10);
