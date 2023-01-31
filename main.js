@@ -74,11 +74,9 @@ class Ball extends Shape {
   draw() {
     context.beginPath();
     context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-<<<<<<< HEAD
+ 
+ 
     context.fillStyle = "black";
-=======
-    context.fillStyle = "#0095DD";
->>>>>>> d7f616b769e6b5b78a2030afe7fd82d5a9418563
     context.fill();
     context.closePath();
   }
@@ -221,5 +219,12 @@ function DrawBricks() {
     }
   }
 }
+
+var GameOverSound = document.getElementById("GameOverSound");
+var WinSound= document.getElementById("WinSound");
+GameOverSound.play();
+WinSound.play();
+
+
 
 DrawCanvas();
