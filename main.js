@@ -1,7 +1,6 @@
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
-const FillColor = "black";
-const DimmedColor = "rgba(0,0,0,0.2)";
+const FillColor = "beige";
 const BallRadius = 20;
 const BrickHeight = 50;
 const StartButton = document.getElementById("Startbutton");
@@ -50,7 +49,7 @@ class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
     this.radii = 5;
-    this.life = 2;
+    this.life = 1;
   }
   draw() {
     context.beginPath();
@@ -61,58 +60,12 @@ class Brick extends Shape {
       this.height,
       this.radii
     );
-    if (this.life === 2) {
-      context.fillStyle = FillColor;
-      context.fill();
-    } else if (this.life === 1) {
-      context.fillStyle = DimmedColor;
-      context.fill();
-    }
-    context.closePath();
-  }
-}
-
-class Ball extends Shape {
-  constructor({ position, Velocity, width, height, radius }) {
-    super({ position, Velocity, width, height });
-    this.radius = radius;
-  }
-  draw() {
-    context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = "#0095DD";
+    context.fillStyle = FillColor;
     context.fill();
     context.closePath();
   }
-  move() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    DrawBricks();
-    if (
-      GameBall.position.x + dx > canvas.width - BallRadius ||
-      GameBall.position.x + dx < BallRadius
-    ) {
-      dx = -dx;
-    }
-    if (
-      GameBall.position.y + dy > canvas.height - BallRadius ||
-      GameBall.position.y + dy < BallRadius
-    ) {
-      dy = -dy;
-    }
-    GameBall.position.x += dx;
-    GameBall.position.y += dy;
-    GameBall.draw();
-    GamePaddle.draw();
-  }
 }
 
-let GameBall = new Ball({
-  position: { x: canvas.width / 2, y: canvas.height - 80 },
-  Velocity: { x: 0, y: 0 },
-  width: undefined,
-  height: undefined,
-  radius: BallRadius,
-});
 
 class Paddle extends Shape {
   constructor({ position, Velocity, width, height }) {
@@ -128,22 +81,22 @@ class Paddle extends Shape {
       this.height,
       this.radii
     );
-    context.fillStyle = "red";
+    context.fillStyle = "#f42279";
     context.fill();
     context.closePath();
   }
   move() {
     if (RPressed) {
-      console.log("you pressed right");
+      //console.log("you pressed right");
       PaddleX += 7;
       GamePaddle.position.x = PaddleX;
-      console.log(PaddleX);
+      //console.log(PaddleX);
       if (PaddleX + PaddleWidth > canvas.width - 10) {
         PaddleX = canvas.width - PaddleWidth - 20;
       }
     } else if (LPressed) {
-      console.log("you pressed left");
-      console.log(PaddleX);
+      //console.log("you pressed left");
+      //console.log(PaddleX);
       PaddleX -= 7;
       GamePaddle.position.x = PaddleX;
       if (PaddleX < 10) {
@@ -242,76 +195,41 @@ class Environment {
 
     console.log(this.score);
   }
-
-  DrawBricks() {
-    for (let j = 0; j < 12; j++) {
-      BricksArray[j] = [];
-      for (let i = 0; i < 5; i++) {
-        const BrickX = j * (BrickWidth + BrickPadding) + 25;
-        const BrickY = i * (BrickHeight + BrickPadding) + 10;
-        BricksArray[j][i] = new Brick({
-          position: { x: BrickX, y: BrickY },
-          Velocity: { x: 0, y: 0 },
-          width: BrickWidth,
-          height: BrickHeight,
-          radii: 10,
-        });
-        BricksArray[j][i].draw();
-      }
-    }
-  }
-
-  collisionDetection() {
-    for (let j = 0; j < 12; j++) {
-      for (let i = 0; i < 5; i++) {
-        const CurrentBrick = BricksArray[j][i];
-        const OverlapX =
-          GameBall.position.x >= CurrentBrick.position.x - BallRadius &&
-          GameBall.position.x >=
-            CurrentBrick.position.x + BrickWidth + BallRadius;
-        const OverlapY =
-          GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
-          GameBall.position.y >=
-            CurrentBrick.position.y + CurrentBrick.height + BallRadius;
-        if (OverlapX && OverlapY) {
-          //   dx = -dx;
-          dy = -dy;
-          CurrentBrick.life--;
-        }
-        // if (OverlapY) {
-        //   CurrentBrick.life--;
-        // }
-      }
-    }
-  }
 }
 
-let Game = new Environment();
+let GameEnvironment = new Environment();
 
 function GameMovement() {
-//   Game.collisionDetection();
   GamePaddle.move();
   GameBall.move();
 }
 
-let testbrick = new Brick({
-  position: { x: 100, y: 100 },
-  Velocity: { x: 0, y: 0 },
-  width: BrickWidth,
-  height: BrickHeight,
-  radii: 10,
-});
-testbrick.draw();
-
 function DrawCanvas() {
-  StartButton.addEventListener("click", Game.GameStart);
-
+  StartButton.addEventListener("click", GameEnvironment.GameStart);
   GamePaddle.draw();
-  //   Game.DrawBricks();
+  DrawBricks();
   GameBall.draw();
   setInterval(() => {
     GameMovement();
   }, 10);
+}
+
+function DrawBricks() {
+  for (let j = 0; j < 12; j++) {
+    BricksArray[j] = [];
+    for (let i = 0; i < 5; i++) {
+      const BrickX = j * (BrickWidth + BrickPadding) + 25;
+      const BrickY = i * (BrickHeight + BrickPadding) + 10;
+      BricksArray[j][i] = new Brick({
+        position: { x: BrickX, y: BrickY },
+        Velocity: { x: 0, y: 0 },
+        width: BrickWidth,
+        height: BrickHeight,
+        radii: 10,
+      });
+      BricksArray[j][i].draw();
+    }
+  }
 }
 
 DrawCanvas();
