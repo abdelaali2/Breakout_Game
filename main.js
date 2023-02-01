@@ -10,6 +10,7 @@ const BrickPadding = 30;
 const PaddleWidth = 300;
 const PaddleHeight = 40;
 const BricksArray = [];
+let requestID;
 let DestroyedBricks = 0;
 let LivesCountDown = 3;
 let Score = document.getElementById("Score");
@@ -114,20 +115,24 @@ class Paddle extends Shape {
     if (Game.isON) {
     }
     if (RPressed) {
-      PaddleX += 10;
-      GamePaddle.position.x = PaddleX;
-      if (PaddleX + PaddleWidth > canvas.width - 10) {
-        PaddleX = canvas.width - PaddleWidth - 20;
+      this.Velocity.x = 10;
+      this.position.x += this.Velocity.x;
+      if (this.Velocity.x + PaddleWidth > canvas.width - 10) {
+        this.Velocity.x = canvas.width - PaddleWidth - 20;
       }
     } else if (LPressed) {
-      PaddleX -= 10;
-      GamePaddle.position.x = PaddleX;
-      if (PaddleX < 10) {
-        PaddleX = 20;
+      this.Velocity.x = -10;
+      this.position.x += this.Velocity.x;
+      if (this.Velocity.x < 10) {
+        this.Velocity.x = 20;
       }
     }
-    GameBall.draw();
-    GamePaddle.draw();
+    // GameBall.draw();
+    this.draw();
+  }
+  reset(){
+    this.position = { x: PaddleX, y: PaddleY - 70 };
+    this.Velocity = { x: 0, y: 0 };
   }
 }
 
@@ -157,39 +162,45 @@ class Ball extends Shape {
   }
   move() {
     if (
-      GameBall.position.x + GameBall.Velocity.x > canvas.width - BallRadius ||
-      GameBall.position.x + GameBall.Velocity.x < BallRadius
+      this.position.x + this.Velocity.x > canvas.width - BallRadius ||
+      this.position.x + this.Velocity.x < BallRadius
     ) {
-      GameBall.Velocity.x = -GameBall.Velocity.x;
+      this.Velocity.x = -this.Velocity.x;
     }
-    if (GameBall.position.y + GameBall.Velocity.y < BallRadius) {
-      GameBall.Velocity.y = -GameBall.Velocity.y;
+    if (this.position.y + this.Velocity.y < BallRadius) {
+      this.Velocity.y = -this.Velocity.y;
     } else if (
-      GameBall.position.y + GameBall.Velocity.y >
-      canvas.height - GamePaddle.height - GameBall.radius - 45
+      this.position.y + this.Velocity.y >
+      canvas.height - GamePaddle.height - this.radius - 45
     ) {
       if (
-        GameBall.position.x >= GamePaddle.position.x - BallRadius &&
-        GameBall.position.x <= GamePaddle.position.x + PaddleWidth + BallRadius
+        this.position.x >= GamePaddle.position.x - BallRadius &&
+        this.position.x <= GamePaddle.position.x + PaddleWidth + BallRadius
       ) {
-        const collisionX = Math.abs(GameBall.position.x - GamePaddle.position.x);
+        const collisionX = Math.abs(
+          this.position.x - GamePaddle.position.x
+        );
         const distanceToMiddle = collisionX - PaddleWidth / 2;
-        GameBall.Velocity.x = distanceToMiddle / 32;
-        GameBall.Velocity.y = -GameBall.Velocity.y;
-        GameBall.position.y -= GameBall.Velocity.y;
+        this.Velocity.x = distanceToMiddle / 32;
+        this.Velocity.y = -this.Velocity.y;
+        this.position.y -= this.Velocity.y;
       } else {
-        GameBall.position = { x: canvas.width / 2, y: canvas.height + 25 };
+        this.position = { x: canvas.width / 2, y: canvas.height + 25 };
         GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
         Game.decreaseLife();
         Lives.innerHTML = `Lives: ${Game.life}`;
       }
-      // } else if (GameBall.position.y + GameBall.Velocity.y > canvas.height) {
-      //   alert("you hit rock bottom");
+      } else if (this.position.y + this.Velocity.y > canvas.height) {
+        alert("you hit rock bottom");
     }
-    GameBall.position.x += GameBall.Velocity.x;
-    GameBall.position.y += GameBall.Velocity.y;
-    GameBall.draw();
-    GamePaddle.draw();
+    this.position.x += this.Velocity.x;
+    this.position.y += this.Velocity.y;
+    this.draw();
+    // GamePaddle.draw();
+  }
+  reset(){
+    this.position = { x: 1000, y: canvas.height - 450 };
+    this.Velocity = { x: 10, y: 10 };
   }
 }
 
@@ -212,28 +223,23 @@ class Environment {
     this.life = 3;
     this.score = 0;
     this.isON = false;
+    // this.requestID;
   }
 
   GameStart() {
     let StartCountdown = 3;
-
     let StartCountdownTimerID;
-
     StartButton.innerHTML = `${StartCountdown}`;
-    console.log(`in gamestart function ${StartCountdown}`);
     if (!this.isON) {
-      console.log(`in first if function ${StartCountdown}`);
       StartCountdownTimerID = setInterval(countdown, 970);
       function countdown() {
-        console.log(`in countdown function ${StartCountdown}`);
         if (StartCountdown == 1) {
           StartButton.innerHTML = "Pause";
           this.isON = true;
           clearInterval(StartCountdownTimerID);
-          DrawCanvas();
+          GameMovement();
         } else {
           StartCountdown--;
-          console.log(`in countdown function else condition${StartCountdown}`);
           StartButton.innerHTML = `${StartCountdown}`;
         }
       }
@@ -306,10 +312,12 @@ class Environment {
   decreaseLife() {
     if (this.life) {
       this.life--;
-      GameBall=initialball;
-      // alert("gameball reset");
-      GamePaddle=initialPaddle;
-      // alert("Game paddle reset")
+      GameBall.reset();
+      GamePaddle.reset();
+    } else {
+      // alert("Game Over");
+      this.isON=false;
+      cancelAnimationFrame(requestID);
     }
   }
 }
@@ -320,8 +328,11 @@ function GameMovement() {
   Game.collisionDetection();
   GamePaddle.move();
   GameBall.move();
-  Game.requestID = requestAnimationFrame(GameMovement);
-  // return;
+  if (Game.isON) {
+    return;
+  }
+  requestID = requestAnimationFrame(GameMovement);
+  // alert(requestID)
 }
 
 let testbrick = new Brick({
@@ -333,15 +344,11 @@ let testbrick = new Brick({
 });
 
 // testbrick.draw();
-StartButton.addEventListener("click", Game.GameStart);
 function DrawCanvas() {
   StartButton.addEventListener("click", Game.GameStart);
   cancelAnimationFrame(Game.requestID);
   Game.DrawBricks();
   GamePaddle.draw();
   GameBall.draw();
-  // Game.GameStart();
-  // setInterval(() => {
-  GameMovement();
-  // }, 10);
 }
+DrawCanvas();
