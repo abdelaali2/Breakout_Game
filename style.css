@@ -51,15 +51,16 @@ body {
   margin: 0 auto;
   border-radius: 100%;
   border-color: #f42279;
-  /* margin-top: 1em; */
+  margin-top: 1em;
   font-size: larger;
   background-color: antiquewhite;
   cursor: pointer;
   line-height: 7em;
+  word-wrap: break-word;
   /* vertical-align: middle; */
 }
-.popup {
-  display: none;
+#popup {
+  display: block;
   background-color: rgba(0, 0, 0, 0.75);
   /* content: "Game Over"; */
   min-width: 100%;
