@@ -12,7 +12,7 @@ const PaddleWidth = 300;
 const PaddleHeight = 40;
 const BricksArray = [];
 const GameoverImage = new Image();
-GameoverImage.src="./Media/GG.jpeg"
+GameoverImage.src = "./Media/GG.jpeg";
 let requestID;
 let DestroyedBricks = 0;
 let LivesCountDown = 3;
@@ -33,7 +33,7 @@ function KeyDown(e) {
     RPressed = true;
   } else if (e.key == "Left" || e.key == "ArrowLeft") {
     LPressed = true;
-  } else if (e.which == 32 && GameBall.moveWithPaddle) {
+  } else if (e.key == " " && GameBall.moveWithPaddle) {
     GameBall.Velocity = { x: 0, y: -10 };
     GameBall.moveWithPaddle = false;
   }
@@ -63,16 +63,16 @@ function MouseHandler(e) {
       GameBall.position.x = mousePosition + PaddleWidth / 2;
     }
   }
-
-  if (GamePaddle.position.x === canvas.width + canvasLeft) {
-    alert("at max right");
-  }
 }
 
 function mouseClick() {
   if (Game.isON) {
     GameBall.Velocity = { x: 0, y: -10 };
     GameBall.moveWithPaddle = false;
+  } else {
+    GameBall.Velocity = { x: 0, y: -10 };
+    GameBall.moveWithPaddle = false;
+    Game.GameStart();
   }
 }
 
@@ -305,7 +305,7 @@ class Environment {
 
   GameOver() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(GameoverImage, 0, 0,canvas.width,canvas.height);
+    context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
     cancelAnimationFrame(requestID);
     GamePaddle.reset();
     GameBall.reset();
