@@ -22,6 +22,7 @@ let PaddleY = canvas.height - PaddleHeight;
 
 document.addEventListener("keydown", KeyDown, false);
 document.addEventListener("keyup", KeyUp, false);
+canvas.addEventListener("mousemove",MouseHandler)
 
 function KeyDown(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
@@ -39,6 +40,12 @@ function KeyUp(e) {
   } else if (e.key == "Left" || e.key == "ArrowLeft") {
     LPressed = false;
   }
+}
+function MouseHandler(e)
+{
+  const MouseMovement=e.clientX-canvas.offsetLeft;
+  if (MouseMovement>10+PaddleWidth/2 && MouseMovement<canvas.width-10)
+  GamePaddle.position.x=e.pageX+e.offsetX-PaddleWidth;
 }
 
 class Shape {
