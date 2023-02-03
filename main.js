@@ -202,7 +202,7 @@ class Paddle extends Shape {
       this.height,
       this.CornerRadius
     );
-    context.fillStyle = "red";
+    context.fillStyle = "#f42279";
     context.fill();
     context.closePath();
   }

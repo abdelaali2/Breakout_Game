@@ -15,6 +15,7 @@ body {
   background-size: 100% 100%;
   background-position: center;
   vertical-align: middle;
+  /* overflow: hidden; */
 }
 nav {
   display: flex;
@@ -80,4 +81,14 @@ nav {
   text-align: center;
   font-family: "Times New Roman", Times, serif;
   font-style: oblique;
+}
+#controlMenu {
+  max-height: 55px;
+  white-space:pre;
+  margin-top: 35px;
+  border-color: #f42279;
+  font-size: 0.6rem;
+  background-color: antiquewhite;
+  line-height: 7em;
+  word-wrap: break-word;
 }
