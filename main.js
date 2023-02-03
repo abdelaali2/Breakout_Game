@@ -16,12 +16,26 @@ const Lives = document.getElementById("Lives");
 const Gameover = document.getElementById("Gameover");
 const StartButton = document.getElementById("Startbutton");
 const GameoverImage = new Image();
-const GameWinImage = new Image();
 GameoverImage.src = "./Media/GG.jpeg";
+const GameWinImage = new Image();
 GameWinImage.src = "./Media/Win.png";
+const GameStartSound = new Audio(); //
+GameStartSound.src = "./Media/GamesStart.wav";
+const GameOverSound = new Audio(); //
+GameOverSound.src = "./Media/GameOver.wav";
+const GameWinSound = new Audio(); //
+GameWinSound.src = "./Media/GameWin.wav";
+const BallBrickSound = new Audio();
+BallBrickSound.src = "./Media/BallBrickSound.wav";
+const BallPaddleSound = new Audio();
+BallPaddleSound.src = "./Media/BallPaddleSound.wav";
+const ContinueSound = new Audio(); //
+ContinueSound.src = "./Media/Continue.wav";
+const PauseSound = new Audio(); //
+PauseSound.src = "./Media/Pause.wav";
+const ResetSound = new Audio();
+ResetSound.src = "./Media/Reset.wav";
 let requestID;
-let DestroyedBricks = 0;
-let LivesCountDown = 3;
 let RPressed = false;
 let LPressed = false;
 let PaddleX = (canvas.width - PaddleWidth) / 2;
@@ -35,6 +49,7 @@ class Event {
     } else if (e.key == "Left" || e.key == "ArrowLeft") {
       LPressed = true;
     } else if (e.key == " " && GameBall.movesWithPaddle) {
+      BallPaddleSound.play();
       GameBall.Velocity = { x: 0, y: -10 };
       GameBall.movesWithPaddle = false;
     } else if (e.key == "Escape") {
@@ -66,6 +81,7 @@ class Event {
 
   mouseClickDown() {
     if (GameBall.movesWithPaddle) {
+      BallPaddleSound.play();
       GameBall.Velocity = { x: 0, y: -10 };
       GameBall.movesWithPaddle = false;
     }
@@ -235,6 +251,7 @@ class Ball extends Shape {
           this.position.x >= GamePaddle.position.x - BallRadius &&
           this.position.x <= GamePaddle.position.x + PaddleWidth + BallRadius
         ) {
+          BallPaddleSound.play();
           const collisionX = Math.abs(this.position.x - GamePaddle.position.x);
           const distanceToMiddle = collisionX - PaddleWidth / 2;
           this.Velocity.x = distanceToMiddle / 25;
@@ -246,8 +263,8 @@ class Ball extends Shape {
           Game.decreaseLife();
           Lives.innerText = `Lives: ${Game.life}`;
         }
-      } else if (this.position.y + this.Velocity.y > canvas.height) {
-        alert("you hit rock bottom");
+        // } else if (this.position.y + this.Velocity.y > canvas.height) {
+        //   alert("you hit rock bottom");
       }
       this.position.x += this.Velocity.x;
       this.position.y += this.Velocity.y;
@@ -290,12 +307,13 @@ class Environment {
     ) {
       Game.GamePause();
     } else if (StartButton.innerText === "Play Again") {
-      console.log("going to drawcanvas()")
+      console.log("going to drawcanvas()");
       // DrawCanvas();
     }
   }
 
   GameStart() {
+    GameStartSound.play();
     let StartCountdown = 3;
     let StartCountdownTimerID;
     Game.isON = true;
@@ -315,11 +333,13 @@ class Environment {
 
   GamePause() {
     if (StartButton.innerText === "Pause") {
+      PauseSound.play();
       StartButton.innerText = "Continue";
       cancelAnimationFrame(requestID);
       canvas.style.backgroundColor = "rgb(0,0,0)";
       canvas.style.opacity = "0.5";
     } else if (StartButton.innerText === "Continue") {
+      ContinueSound.play();
       StartButton.innerText = "Pause";
       canvas.style.backgroundColor = "transparent";
       canvas.style.opacity = "1";
@@ -328,6 +348,7 @@ class Environment {
   }
 
   GameOver() {
+    GameOverSound.play();
     this.DrawBricks();
     cancelAnimationFrame(requestID);
     GamePaddle.reset();
@@ -341,6 +362,7 @@ class Environment {
 
   GameWin() {
     cancelAnimationFrame(requestID);
+    GameWinSound.play();
     GamePaddle.reset();
     GameBall.reset();
     this.isON = false;
@@ -382,7 +404,8 @@ class Environment {
             GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
             GameBall.position.y <=
               CurrentBrick.position.y + CurrentBrick.height + BallRadius;
-          if (BallBrickOverlapX || BallBrickOverlapY) {
+          if (BallBrickOverlapX && BallBrickOverlapY) {
+            BallBrickSound.play();
             if (
               GameBall.position.x <=
                 CurrentBrick.position.x +
@@ -408,6 +431,7 @@ class Environment {
   decreaseLife() {
     if (this.life) {
       this.life--;
+      ResetSound.play();
       GameBall.reset();
       GamePaddle.reset();
     } else {
@@ -445,7 +469,7 @@ function DrawCanvas() {
   GameBall.draw();
   if (StartButton.innerText === "Play Again") {
     Game.score = 0;
-    alert("score reset")
+    alert("score reset");
     Game.life = 3;
     Lives.innerText = `Lives: ${Game.life}`;
     Game.GameStart();
