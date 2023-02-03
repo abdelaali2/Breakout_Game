@@ -299,17 +299,20 @@ class Environment {
   }
 
   controlButton() {
-    if (StartButton.innerText === "Start") {
+    if (StartButton.innerText === "Start" || StartButton.innerText === "Play Again") {
       Game.GameStart();
     } else if (
       StartButton.innerText === "Pause" ||
       StartButton.innerText === "Continue"
     ) {
+    
       Game.GamePause();
-      // } else if (StartButton.innerText === "Play Again") {
-      //   console.log("going to drawcanvas()");
-      //   DrawCanvas();
-    }
+      } 
+    //   else if (StartButton.innerText === "Play Again") {
+       
+    //     DrawCanvas();
+        
+    // }
   }
 
   GameStart() {
@@ -375,7 +378,7 @@ class Environment {
   }
 
   DrawBricks() {
-    for (let j = 0; j < 12; j++) {
+    for (let j = 0; j < 11; j++) {
       BricksArray[j] = [];
       for (let i = 0; i < 5; i++) {
         const BrickX = j * (BrickWidth + BrickPadding) + 25;
@@ -422,7 +425,7 @@ class Environment {
             }
             CurrentBrick.decreaseLife();
           }
-          if (this.score === 12 * 5) {
+          if (this.score === 11 * 5) {
             this.GameWin();
             console.log("you win");
           }
