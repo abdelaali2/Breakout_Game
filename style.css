@@ -53,26 +53,13 @@ body {
   border-radius: 100%;
   border-color: #f42279;
   margin-top: 1em;
-  font-size: larger;
+  font-size: 1.1rem;
   background-color: antiquewhite;
   cursor: pointer;
   line-height: 7em;
   word-wrap: break-word;
   /* vertical-align: middle; */
 }
-#popup {
-  display: block;
-  background-color: rgba(0, 0, 0, 0.75);
-  /* content: "Game Over"; */
-  min-width: 100%;
-  min-height: 100%;
-  font-size: 7em;
-  color: rgb(165, 131, 56);
-  position: absolute;
-  z-index: 2;
-  margin: 0 auto;
-}
-
 #text {
   position: absolute;
   bottom: 50%;
@@ -80,4 +67,14 @@ body {
   text-align: center;
   font-family: "Times New Roman", Times, serif;
   font-style: oblique;
+}
+#controlMenu {
+  max-height: 55px;
+  white-space:pre;
+  margin-top: 35px;
+  border-color: #f42279;
+  font-size: 0.6rem;
+  background-color: antiquewhite;
+  line-height: 7em;
+  word-wrap: break-word;
 }
