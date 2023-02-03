@@ -109,7 +109,6 @@ class Event {
   }
 
   MuteClicked() {
-    alert("Muted");
     if (!Game.isMuted) {
       Game.isMuted = true;
       MuteImage.src = "./Media/mutelogo.png";
@@ -358,6 +357,7 @@ class Environment {
       if (StartCountdown == 1) {
         StartButton.innerText = "Pause";
         clearInterval(StartCountdownTimerID);
+        DrawCanvas();
         GameMovement();
       } else {
         StartCountdown--;
@@ -513,4 +513,21 @@ function DrawCanvas() {
   }
 }
 StartButton.addEventListener("click", Game.controlButton);
-DrawCanvas();
+DrawInstructions();
+
+function DrawInstructions() {
+  const Instructions = [];
+  Instructions.push(`Press [____] or 🖱️ click to Start`);
+  Instructions.push(`Press "M" to Mute`);
+  Instructions.push(`Press "ESC" to Pause`);
+  Instructions.push(`⇔ or 🖱️ to control paddle`);
+  context.font = "100px Arial";
+  context.textAlign = "center";
+  context.fillStyle = "#f42279";
+  context.strokeStyle = "white";
+  context.lineWidth = 5;
+  Instructions.forEach((line, index) => {
+    context.strokeText(line, canvas.width / 2, index * 200 + 300);
+    context.fillText(line, canvas.width / 2, index * 200 + 300);
+  });
+}
