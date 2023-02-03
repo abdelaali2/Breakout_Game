@@ -14,6 +14,10 @@ const canvasRight = canvasRect.right;
 const Score = document.getElementById("Score");
 const Lives = document.getElementById("Lives");
 const Gameover = document.getElementById("Gameover");
+const MuteButton = document.getElementById("MuteButton");
+const MuteImage = new Image(50, 50);
+MuteImage.src = "./Media/unmutelogo.png";
+MuteButton.appendChild(MuteImage);
 const StartButton = document.getElementById("Startbutton");
 const GameoverImage = new Image();
 GameoverImage.src = "./Media/gameover.png";
@@ -35,6 +39,15 @@ const PauseSound = new Audio(); //
 PauseSound.src = "./Media/Pause.wav";
 const ResetSound = new Audio();
 ResetSound.src = "./Media/Reset.wav";
+const SoundPlaylist = [];
+SoundPlaylist.push(GameStartSound);
+SoundPlaylist.push(GameOverSound);
+SoundPlaylist.push(GameWinSound);
+SoundPlaylist.push(BallBrickSound);
+SoundPlaylist.push(BallPaddleSound);
+SoundPlaylist.push(ContinueSound);
+SoundPlaylist.push(PauseSound);
+SoundPlaylist.push(ResetSound);
 let requestID;
 let RPressed = false;
 let LPressed = false;
@@ -63,6 +76,8 @@ class Event {
       LPressed = false;
     } else if (e.key == " " && !Game.isON) {
       Game.GameStart();
+    } else if (e.key == "m" || e.key == "M") {
+      GameEvent.MuteClicked();
     }
   }
 
@@ -92,13 +107,32 @@ class Event {
       Game.GameStart();
     }
   }
+
+  MuteClicked() {
+    alert("Muted");
+    if (!Game.isMuted) {
+      Game.isMuted = true;
+      MuteImage.src = "./Media/mutelogo.png";
+      SoundPlaylist.forEach((sound) => {
+        sound.muted = true;
+      });
+    } else {
+      Game.isMuted = false;
+      MuteImage.src = "./Media/unmutelogo.png";
+      SoundPlaylist.forEach((sound) => {
+        sound.muted = false;
+      });
+    }
+  }
 }
+
 let GameEvent = new Event();
 document.addEventListener("keydown", GameEvent.KeyDown, false);
 document.addEventListener("keyup", GameEvent.KeyUp, false);
-document.addEventListener("mousemove", GameEvent.MouseHandler, false);
-document.addEventListener("mousedown", GameEvent.mouseClickDown, false);
-document.addEventListener("mouseup", GameEvent.mouseClickUp, false);
+canvas.addEventListener("mousemove", GameEvent.MouseHandler, false);
+canvas.addEventListener("mousedown", GameEvent.mouseClickDown, false);
+canvas.addEventListener("mouseup", GameEvent.mouseClickUp, false);
+MuteButton.addEventListener("click", GameEvent.MuteClicked, false);
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -296,6 +330,7 @@ class Environment {
     this.life = 3;
     this.score = 0;
     this.isON = false;
+    this.isMuted = false;
   }
 
   controlButton() {
@@ -306,9 +341,9 @@ class Environment {
       StartButton.innerText === "Continue"
     ) {
       Game.GamePause();
-      // } else if (StartButton.innerText === "Play Again") {
-      //   console.log("going to drawcanvas()");
-      //   DrawCanvas();
+    } else if (StartButton.innerText === "Play Again") {
+      console.log("going to drawcanvas()");
+      DrawCanvas();
     }
   }
 
@@ -336,12 +371,11 @@ class Environment {
       PauseSound.play();
       StartButton.innerText = "Continue";
       cancelAnimationFrame(requestID);
-      canvas.style.backgroundColor = "rgb(0,0,0)";
-      canvas.style.opacity = "0.5";
+      canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     } else if (StartButton.innerText === "Continue") {
       ContinueSound.play();
       StartButton.innerText = "Pause";
-      canvas.style.backgroundColor = "transparent";
+      canvas.style.backgroundColor = "rgba(0,0,0,0.1)";
       canvas.style.opacity = "1";
       GameMovement();
     }
@@ -349,10 +383,7 @@ class Environment {
 
   GameOver() {
     GameOverSound.play();
-    this.DrawBricks();
     cancelAnimationFrame(requestID);
-    GamePaddle.reset();
-    GameBall.reset();
     this.isON = false;
     context.clearRect(0, 0, canvas.width, canvas.height);
     canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
@@ -463,7 +494,6 @@ let testbrick = new Brick({
   CornerRadius: 10,
 });
 
-// testbrick.draw();
 function DrawCanvas() {
   cancelAnimationFrame(requestID);
   Game.DrawBricks();
@@ -471,9 +501,14 @@ function DrawCanvas() {
   GameBall.draw();
   if (StartButton.innerText === "Play Again") {
     Game.score = 0;
-    alert("score reset");
+    canvas.style.background = "rgba(0, 0, 0, 0.1)";
+    Score.innerText = `Score: ${Game.score}`;
     Game.life = 3;
     Lives.innerText = `Lives: ${Game.life}`;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    GamePaddle.reset();
+    GameBall.reset();
+    Game.DrawBricks();
     Game.GameStart();
   }
 }
