@@ -16,7 +16,9 @@ const Lives = document.getElementById("Lives");
 const Gameover = document.getElementById("Gameover");
 const StartButton = document.getElementById("Startbutton");
 const GameoverImage = new Image();
+const GameWinImage = new Image();
 GameoverImage.src = "./Media/GG.jpeg";
+GameWinImage.src = "./Media/Win.png";
 let requestID;
 let DestroyedBricks = 0;
 let LivesCountDown = 3;
@@ -337,7 +339,16 @@ class Environment {
     StartButton.style.lineHeight = "6.5em";
   }
 
-  GameWin() {}
+  GameWin() {
+    cancelAnimationFrame(requestID);
+    GamePaddle.reset();
+    GameBall.reset();
+    this.isON = false;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(GameWinImage, 0, 0, canvas.width, canvas.height);
+    StartButton.innerText = "Play Again";
+    StartButton.style.lineHeight = "6.5em";
+  }
 
   DrawBricks() {
     for (let j = 0; j < 12; j++) {
@@ -371,7 +382,7 @@ class Environment {
             GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
             GameBall.position.y <=
               CurrentBrick.position.y + CurrentBrick.height + BallRadius;
-          if (BallBrickOverlapX && BallBrickOverlapY) {
+          if (BallBrickOverlapX || BallBrickOverlapY) {
             if (
               GameBall.position.x <=
                 CurrentBrick.position.x +
