@@ -350,11 +350,11 @@ class Environment {
 
   setGameSpeed(GameSpeed) {
     Game.SpeedValue = GameSpeed;
-    if (GameSpeed >= 10 && GameSpeed <= 25) {
+    if (GameSpeed >= 10 && GameSpeed <= 18) {
       rangeValue.innerHTML = "Easy";
-    } else if (GameSpeed > 25 && GameSpeed <= 42) {
+    } else if (GameSpeed > 18 && GameSpeed <= 30) {
       rangeValue.innerHTML = "Medium";
-    } else if (GameSpeed > 42) {
+    } else if (GameSpeed > 30) {
       rangeValue.innerHTML = "Hard";
     }
     GameSpeedSlider.blur();
