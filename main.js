@@ -16,7 +16,7 @@ const Lives = document.getElementById("Lives");
 const Gameover = document.getElementById("Gameover");
 const StartButton = document.getElementById("Startbutton");
 const GameoverImage = new Image();
-GameoverImage.src = "./Media/GG.jpeg";
+GameoverImage.src = "./Media/gameover.png";
 const GameWinImage = new Image();
 GameWinImage.src = "./Media/Win.png";
 const GameStartSound = new Audio(); //
@@ -114,7 +114,7 @@ class Shape {
 class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
-    this.radii = 5;
+    this.CornerRadius = 5;
     this.life = 2;
   }
   draw() {
@@ -125,7 +125,7 @@ class Brick extends Shape {
         this.position.y,
         this.width,
         this.height,
-        this.radii
+        this.CornerRadius
       );
       context.fillStyle = FillColor;
       context.fill();
@@ -136,7 +136,7 @@ class Brick extends Shape {
         this.position.y,
         this.width,
         this.height,
-        this.radii
+        this.CornerRadius
       );
       context.fillStyle = DimmedColor;
       context.fill();
@@ -157,7 +157,7 @@ class Brick extends Shape {
 class Paddle extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
-    this.radii = 10;
+    this.CornerRadius = 10;
   }
   draw() {
     context.beginPath();
@@ -166,7 +166,7 @@ class Paddle extends Shape {
       this.position.y,
       this.width,
       this.height,
-      this.radii
+      this.CornerRadius
     );
     context.fillStyle = "red";
     context.fill();
@@ -306,9 +306,9 @@ class Environment {
       StartButton.innerText === "Continue"
     ) {
       Game.GamePause();
-    } else if (StartButton.innerText === "Play Again") {
-      console.log("going to drawcanvas()");
-      // DrawCanvas();
+      // } else if (StartButton.innerText === "Play Again") {
+      //   console.log("going to drawcanvas()");
+      //   DrawCanvas();
     }
   }
 
@@ -355,6 +355,7 @@ class Environment {
     GameBall.reset();
     this.isON = false;
     context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
     StartButton.style.lineHeight = "6.5em";
@@ -367,6 +368,7 @@ class Environment {
     GameBall.reset();
     this.isON = false;
     context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     context.drawImage(GameWinImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
     StartButton.style.lineHeight = "6.5em";
@@ -383,7 +385,7 @@ class Environment {
           Velocity: { x: 0, y: 0 },
           width: BrickWidth,
           height: BrickHeight,
-          radii: 10,
+          CornerRadius: 10,
         });
         BricksArray[j][i].draw();
       }
@@ -458,7 +460,7 @@ let testbrick = new Brick({
   Velocity: { x: 0, y: 0 },
   width: BrickWidth,
   height: BrickHeight,
-  radii: 10,
+  CornerRadius: 10,
 });
 
 // testbrick.draw();
