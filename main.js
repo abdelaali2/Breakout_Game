@@ -128,10 +128,10 @@ class Brick extends Shape {
   decreaseLife() {
     if (this.life === 2) {
       this.life--;
-    } else if (this.life === 1){
+    } else if (this.life === 1) {
       this.life--;
-      this.score++;
-      Score.innerText = `Score: ${this.score}`;
+      Game.score++;
+      Score.innerText = `Score: ${Game.score}`;
     }
   }
 }
@@ -280,7 +280,6 @@ class Environment {
   }
 
   controlButton() {
-    console.log(StartButton.innerText);
     if (StartButton.innerText === "Start") {
       Game.GameStart();
     } else if (
@@ -289,7 +288,8 @@ class Environment {
     ) {
       Game.GamePause();
     } else if (StartButton.innerText === "Play Again") {
-      DrawCanvas();
+      console.log("going to drawcanvas()")
+      // DrawCanvas();
     }
   }
 
@@ -332,9 +332,14 @@ class Environment {
     GameBall.reset();
     this.isON = false;
     context.clearRect(0, 0, canvas.width, canvas.height);
-    // context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
+    context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
     StartButton.style.lineHeight = "6.5em";
+  }
+
+  GameWin() {
+    // const fireworks = new Fireworks(canvas,{});
+    // fireworks.start();
   }
 
   DrawBricks() {
@@ -371,8 +376,12 @@ class Environment {
               CurrentBrick.position.y + CurrentBrick.height + BallRadius;
           if (BallBrickOverlapX && BallBrickOverlapY) {
             if (
-              GameBall.position.x <= CurrentBrick.position.x + GameBall.Velocity.x - 2 * BallRadius ||
-              GameBall.position.x >= CurrentBrick.position.x + GameBall.Velocity.x + BrickWidth
+              GameBall.position.x <=
+                CurrentBrick.position.x +
+                  GameBall.Velocity.x -
+                  2 * BallRadius ||
+              GameBall.position.x >=
+                CurrentBrick.position.x + GameBall.Velocity.x + BrickWidth
             ) {
               GameBall.Velocity.x = -GameBall.Velocity.x;
             } else {
@@ -381,6 +390,7 @@ class Environment {
             CurrentBrick.decreaseLife();
           }
           if (this.score === 12 * 5) {
+            this.GameWin();
             console.log("you win");
           }
         }
@@ -421,12 +431,13 @@ let testbrick = new Brick({
 
 // testbrick.draw();
 function DrawCanvas() {
-  cancelAnimationFrame(Game.requestID);
+  // cancelAnimationFrame(requestID);
   Game.DrawBricks();
   GamePaddle.draw();
   GameBall.draw();
   if (StartButton.innerText === "Play Again") {
     Game.score = 0;
+    alert("score reset")
     Game.life = 3;
     Lives.innerText = `Lives: ${Game.life}`;
     Game.GameStart();
