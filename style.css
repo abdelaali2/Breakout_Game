@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  vertical-align: middle;
   font-family: "Courier New", Courier, monospace;
   font-weight: bolder;
 }
@@ -15,35 +14,39 @@ body {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
+  vertical-align: middle;
+  /* overflow: hidden; */
+}
+nav {
+  display: flex;
+  gap: 3em;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto;
 }
 
 #myCanvas {
   border: 3px solid black;
-
   background-color: rgba(0, 0, 0, 0.1);
   width: 90%;
   height: 36em;
-  margin-top: 1em;
   border-radius: 3px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 36em;
 }
 #Score {
-  float: left;
-  margin-left: 5em;
+  order: 1;
   font-size: 2.5em;
-  margin-top: 1em;
   color: #f42279;
 }
 #Lives {
-  float: right;
-  margin-right: 5em;
+  order: 4;
   font-size: 2.5em;
-  margin-top: 1em;
   color: #f42279;
 }
 #Startbutton {
+  order: 2;
   max-width: 125px;
   min-width: 125px;
   max-height: 125px;
@@ -51,14 +54,26 @@ body {
   margin: 0 auto;
   border-radius: 100%;
   border-color: #f42279;
-  margin-top: 1em;
   font-size: 1.1rem;
   background-color: antiquewhite;
   cursor: pointer;
   line-height: 7em;
   word-wrap: break-word;
-  /* vertical-align: middle; */
 }
+
+#MuteButton {
+  order: 3;
+  max-width: 75px;
+  min-width: 75px;
+  max-height: 75px;
+  min-height: 75px;
+  padding-top: 1em;
+  margin: 0 auto;
+  border-radius: 100%;
+  border-color: #f42279;
+  cursor: pointer;
+}
+
 #text {
   position: absolute;
   bottom: 50%;
@@ -66,4 +81,14 @@ body {
   text-align: center;
   font-family: "Times New Roman", Times, serif;
   font-style: oblique;
+}
+#controlMenu {
+  max-height: 55px;
+  white-space:pre;
+  margin-top: 35px;
+  border-color: #f42279;
+  font-size: 0.6rem;
+  background-color: antiquewhite;
+  line-height: 7em;
+  word-wrap: break-word;
 }
