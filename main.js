@@ -9,8 +9,6 @@ const BrickPadding = 30;
 const PaddleWidth = 300;
 const PaddleHeight = 40;
 const BricksArray = [];
-const canvasRect = canvas.getBoundingClientRect();
-const canvasRight = canvasRect.right;
 const Score = document.getElementById("Score");
 const Lives = document.getElementById("Lives");
 const Gameover = document.getElementById("Gameover");
@@ -78,14 +76,9 @@ class Event {
 
   MouseHandler(e) {
     const mousePosition = e.screenX + e.offsetX - PaddleWidth * 0.85;
-    if (
-      mousePosition > 10 &&
-      mousePosition < mousePosition + canvasRight - PaddleWidth
-    ) {
-      GamePaddle.position.x = mousePosition;
-      if (GameBall.movesWithPaddle) {
-        GameBall.position.x = mousePosition + PaddleWidth / 2;
-      }
+    GamePaddle.position.x = mousePosition;
+    if (GameBall.movesWithPaddle) {
+      GameBall.position.x = mousePosition + PaddleWidth / 2;
     }
   }
 
@@ -345,11 +338,12 @@ class Environment {
   }
 
   DrawInstructions() {
-    context.font = "100px Arial";
+    canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
+    context.font = `bolder 100px "Courier New", Courier, monospace`;
     context.textAlign = "center";
     context.fillStyle = "#f42279";
     context.strokeStyle = "white";
-    context.lineWidth = 5;
+    context.lineWidth = 2;
     Instructions.forEach((line, index) => {
       context.strokeText(line, canvas.width / 2, index * 170 + 220);
       context.fillText(line, canvas.width / 2, index * 170 + 220);
@@ -358,11 +352,11 @@ class Environment {
 
   setGameSpeed(GameSpeed) {
     Game.SpeedValue = GameSpeed;
-    if (GameSpeed >= 10 && GameSpeed <= 30) {
+    if (GameSpeed >= 10 && GameSpeed <= 25) {
       rangeValue.innerHTML = "Easy";
-    } else if (GameSpeed > 30 && GameSpeed <= 60) {
+    } else if (GameSpeed > 25 && GameSpeed <= 42) {
       rangeValue.innerHTML = "Medium";
-    } else if (GameSpeed > 60) {
+    } else if (GameSpeed > 42) {
       rangeValue.innerHTML = "Hard";
     }
     GameSpeedSlider.blur();
@@ -377,7 +371,6 @@ class Environment {
     ) {
       Game.GamePause();
     } else if (StartButton.innerText === "Play Again") {
-      console.log("going to drawcanvas()");
       DrawCanvas();
     }
   }
@@ -393,6 +386,7 @@ class Environment {
       if (StartCountdown == 1) {
         StartButton.innerText = "Pause";
         clearInterval(StartCountdownTimerID);
+        canvas.style.backgroundColor = "rgba(0,0,0,0.1)";
         DrawCanvas();
         GameMovement();
       } else {
@@ -415,7 +409,6 @@ class Environment {
       StartButton.innerText = "Pause";
       StartButton.style.lineHeight = "5em";
       canvas.style.backgroundColor = "rgba(0,0,0,0.1)";
-      canvas.style.opacity = "1";
       GameMovement();
     }
   }
@@ -475,7 +468,7 @@ class Environment {
             GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
             GameBall.position.y <=
               CurrentBrick.position.y + CurrentBrick.height + BallRadius;
-          if (BallBrickOverlapX && BallBrickOverlapY) {
+          if (BallBrickOverlapX || BallBrickOverlapY) {
             BallBrickSound.play();
             if (
               GameBall.position.x <=
@@ -493,7 +486,6 @@ class Environment {
           }
           if (this.score === 12 * 5) {
             this.GameWin();
-            console.log("you win");
           }
         }
       });

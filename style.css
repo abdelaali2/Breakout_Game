@@ -38,12 +38,16 @@ nav {
 #Score {
   order: 1;
   font-size: 2.5em;
-  color: #f42279;
+  color: transparent;
+  text-shadow: -1px 1px 2px #f42279, 1px 1px 2px #f42279, 1px -1px 0 #f42279,
+  -1px -1px 0 white;
 }
 #Lives {
   order: 5;
   font-size: 2.5em;
-  color: #f42279;
+  color: transparent;
+  text-shadow: -1px 1px 2px #f42279, 1px 1px 2px #f42279, 1px -1px 0 #f42279,
+  -1px -1px 0 white;
 }
 #Startbutton {
   order: 2;
@@ -53,7 +57,9 @@ nav {
   min-height: 125px;
   margin: 0 auto;
   border-radius: 100%;
-  color: #f42279;
+  color: transparent;
+  text-shadow: -1px 1px 2px #f42279, 1px 1px 2px #f42279, 1px -1px 0 #f42279,
+  -1px -1px 0 white;
   font-size: 1.5rem;
   /* background-color: antiquewhite; */
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
@@ -87,7 +93,9 @@ nav {
   min-width: 4em;
   text-align: center;
   font-size: 3em;
-  color: #f42279;
+  color: transparent;
+  text-shadow: -1px 1px 2px #f42279, 1px 1px 2px #f42279, 1px -1px 0 #f42279,
+  -1px -1px 0 white;
 }
 #GameSpeedSlider {
   order: 4;
