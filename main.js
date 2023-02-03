@@ -48,7 +48,7 @@ let PaddleX = (canvas.width - PaddleWidth) / 2;
 let PaddleY = canvas.height - PaddleHeight;
 
 class Event {
-  constructor() {}
+  constructor() { }
   KeyDown(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
       RPressed = true;
@@ -128,8 +128,8 @@ class Shape {
     this.width = width;
     this.height = height;
   }
-  draw() {}
-  move() {}
+  draw() { }
+  move() { }
 }
 
 class Brick extends Shape {
@@ -369,6 +369,7 @@ class Environment {
       StartButton.innerText === "Pause" ||
       StartButton.innerText === "Continue"
     ) {
+
       Game.GamePause();
     } else if (StartButton.innerText === "Play Again") {
       DrawCanvas();
@@ -381,6 +382,7 @@ class Environment {
     let StartCountdownTimerID;
     Game.isON = true;
     StartButton.innerText = `${StartCountdown}`;
+    StartButton.style.lineHeight = "4.8em";
     StartCountdownTimerID = setInterval(countdown, 970);
     function countdown() {
       if (StartCountdown == 1) {
@@ -434,11 +436,11 @@ class Environment {
     canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     context.drawImage(GameWinImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
-    StartButton.style.lineHeight = "6.5em";
+    StartButton.style.lineHeight = "2.25em";
   }
 
   DrawBricks() {
-    for (let j = 0; j < 12; j++) {
+    for (let j = 0; j < 11; j++) {
       BricksArray[j] = [];
       for (let i = 0; i < 5; i++) {
         const BrickX = j * (BrickWidth + BrickPadding) + 25;
@@ -463,20 +465,20 @@ class Environment {
           const BallBrickOverlapX =
             GameBall.position.x >= CurrentBrick.position.x - BallRadius &&
             GameBall.position.x <=
-              CurrentBrick.position.x + BrickWidth + BallRadius;
+            CurrentBrick.position.x + BrickWidth + BallRadius;
           const BallBrickOverlapY =
             GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
             GameBall.position.y <=
               CurrentBrick.position.y + CurrentBrick.height + BallRadius;
-          if (BallBrickOverlapX || BallBrickOverlapY) {
+          if (BallBrickOverlapX && BallBrickOverlapY) {
             BallBrickSound.play();
             if (
               GameBall.position.x <=
-                CurrentBrick.position.x +
-                  GameBall.Velocity.x -
-                  2 * BallRadius ||
+              CurrentBrick.position.x +
+              GameBall.Velocity.x -
+              2 * BallRadius ||
               GameBall.position.x >=
-                CurrentBrick.position.x + GameBall.Velocity.x + BrickWidth
+              CurrentBrick.position.x + GameBall.Velocity.x + BrickWidth
             ) {
               GameBall.Velocity.x = -GameBall.Velocity.x;
             } else {
@@ -484,7 +486,7 @@ class Environment {
             }
             CurrentBrick.decreaseLife();
           }
-          if (this.score === 12 * 5) {
+          if (this.score === 11 * 5) {
             this.GameWin();
           }
         }
@@ -518,9 +520,6 @@ function GameMovement() {
 
 function DrawCanvas() {
   cancelAnimationFrame(requestID);
-  Game.DrawBricks();
-  GamePaddle.draw();
-  GameBall.draw();
   if (StartButton.innerText === "Play Again") {
     Game.score = 0;
     canvas.style.background = "rgba(0, 0, 0, 0.1)";
@@ -530,9 +529,15 @@ function DrawCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     GamePaddle.reset();
     GameBall.reset();
+    GamePaddle.draw();
+    GameBall.draw();
     Game.DrawBricks();
     Game.GameStart();
-  }
+  } else {
+    Game.DrawBricks();
+    GamePaddle.draw();
+    GameBall.draw();
+ }
 }
 StartButton.addEventListener("click", Game.controlButton);
 
