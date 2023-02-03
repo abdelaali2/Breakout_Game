@@ -470,7 +470,7 @@ class Environment {
           const BallBrickOverlapY =
             GameBall.position.y >= CurrentBrick.position.y - BallRadius &&
             GameBall.position.y <=
-            CurrentBrick.position.y + CurrentBrick.height + BallRadius;
+              CurrentBrick.position.y + CurrentBrick.height + BallRadius;
           if (BallBrickOverlapX && BallBrickOverlapY) {
             BallBrickSound.play();
             if (
