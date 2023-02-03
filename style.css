@@ -34,14 +34,14 @@ body {
   margin-left: 5em;
   font-size: 2.5em;
   margin-top: 1em;
-  color: beige;
+  color: #f42279;
 }
 #Lives {
   float: right;
   margin-right: 5em;
   font-size: 2.5em;
   margin-top: 1em;
-  color: beige;
+  color: #f42279;
 }
 #Startbutton {
   max-width: 125px;
@@ -52,14 +52,13 @@ body {
   border-radius: 100%;
   border-color: #f42279;
   margin-top: 1em;
-  font-size: larger;
+  font-size: 1.1rem;
   background-color: antiquewhite;
   cursor: pointer;
   line-height: 7em;
   word-wrap: break-word;
   /* vertical-align: middle; */
 }
-
 #text {
   position: absolute;
   bottom: 50%;

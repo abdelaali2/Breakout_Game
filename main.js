@@ -4,83 +4,101 @@ const FillColor = "#F1D3B3";
 const DimmedColor = "rgba(240, 233, 210,0.7)";
 const BallRadius = 20;
 const BrickHeight = 50;
-const StartButton = document.getElementById("Startbutton");
-const Gameover = document.getElementById("Gameover");
 const BrickWidth = 210;
 const BrickPadding = 30;
 const PaddleWidth = 300;
 const PaddleHeight = 40;
 const BricksArray = [];
+const canvasRect = canvas.getBoundingClientRect();
+const canvasRight = canvasRect.right;
+const Score = document.getElementById("Score");
+const Lives = document.getElementById("Lives");
+const Gameover = document.getElementById("Gameover");
+const StartButton = document.getElementById("Startbutton");
 const GameoverImage = new Image();
-GameoverImage.src = "./Media/GG.jpeg";
+GameoverImage.src = "./Media/gameover.png";
+const GameWinImage = new Image();
+GameWinImage.src = "./Media/Win.png";
+const GameStartSound = new Audio(); //
+GameStartSound.src = "./Media/GamesStart.wav";
+const GameOverSound = new Audio(); //
+GameOverSound.src = "./Media/GameOver.wav";
+const GameWinSound = new Audio(); //
+GameWinSound.src = "./Media/GameWin.wav";
+const BallBrickSound = new Audio();
+BallBrickSound.src = "./Media/BallBrickSound.wav";
+const BallPaddleSound = new Audio();
+BallPaddleSound.src = "./Media/BallPaddleSound.wav";
+const ContinueSound = new Audio(); //
+ContinueSound.src = "./Media/Continue.wav";
+const PauseSound = new Audio(); //
+PauseSound.src = "./Media/Pause.wav";
+const ResetSound = new Audio();
+ResetSound.src = "./Media/Reset.wav";
 let requestID;
-let DestroyedBricks = 0;
-let LivesCountDown = 3;
-let Score = document.getElementById("Score");
-let Lives = document.getElementById("Lives");
 let RPressed = false;
 let LPressed = false;
 let PaddleX = (canvas.width - PaddleWidth) / 2;
 let PaddleY = canvas.height - PaddleHeight;
 
-document.addEventListener("keydown", KeyDown, false);
-document.addEventListener("keyup", KeyUp, false);
-document.addEventListener("mousemove", MouseHandler, false);
-document.addEventListener("mousedown", mouseClick, false);
-
-function KeyDown(e) {
-  if (e.key == "Right" || e.key == "ArrowRight") {
-    RPressed = true;
-  } else if (e.key == "Left" || e.key == "ArrowLeft") {
-    LPressed = true;
-  } else if (e.key == " " && GameBall.moveWithPaddle) {
-    GameBall.Velocity = { x: 0, y: -10 };
-    GameBall.moveWithPaddle = false;
+class Event {
+  constructor() {}
+  KeyDown(e) {
+    if (e.key == "Right" || e.key == "ArrowRight") {
+      RPressed = true;
+    } else if (e.key == "Left" || e.key == "ArrowLeft") {
+      LPressed = true;
+    } else if (e.key == " " && GameBall.movesWithPaddle) {
+      BallPaddleSound.play();
+      GameBall.Velocity = { x: 0, y: -10 };
+      GameBall.movesWithPaddle = false;
+    } else if (e.key == "Escape") {
+      Game.GamePause();
+    }
   }
-}
-function KeyUp(e) {
-  if (e.key == "Right" || e.key == "ArrowRight") {
-    RPressed = false;
-  } else if (e.key == "Left" || e.key == "ArrowLeft") {
-    LPressed = false;
-  } else if (e.key == " " && !Game.isON) {
-    Game.GameStart();
+  KeyUp(e) {
+    if (e.key == "Right" || e.key == "ArrowRight") {
+      RPressed = false;
+    } else if (e.key == "Left" || e.key == "ArrowLeft") {
+      LPressed = false;
+    } else if (e.key == " " && !Game.isON) {
+      Game.GameStart();
+    }
   }
-}
 
-const canvasRect = canvas.getBoundingClientRect();
-const canvasLeft = canvasRect.left;
-const canvasRight = canvasRect.right;
+  MouseHandler(e) {
+    const mousePosition = e.screenX + e.offsetX - PaddleWidth * 0.85;
+    if (
+      mousePosition > 10 &&
+      mousePosition < mousePosition + canvasRight - PaddleWidth
+    ) {
+      GamePaddle.position.x = mousePosition;
+      if (GameBall.movesWithPaddle) {
+        GameBall.position.x = mousePosition + PaddleWidth / 2;
+      }
+    }
+  }
 
-function MouseHandler(e) {
-  const mousePosition = e.screenX + e.offsetX - PaddleWidth * 0.85;
-  if (
-    mousePosition > 10 &&
-    mousePosition < mousePosition + canvasRight - PaddleWidth
-  ) {
-    GamePaddle.position.x = mousePosition;
-    if (GameBall.moveWithPaddle) {
-      GameBall.position.x = mousePosition + PaddleWidth / 2;
+  mouseClickDown() {
+    if (GameBall.movesWithPaddle) {
+      BallPaddleSound.play();
+      GameBall.Velocity = { x: 0, y: -10 };
+      GameBall.movesWithPaddle = false;
+    }
+  }
+
+  mouseClickUp() {
+    if (!Game.isON) {
+      Game.GameStart();
     }
   }
 }
-
-function mouseClick() {
-  if (Game.isON) {
-    GameBall.Velocity = { x: 0, y: -10 };
-    GameBall.moveWithPaddle = false;
-  } else {
-    GameBall.Velocity = { x: 0, y: -10 };
-    GameBall.moveWithPaddle = false;
-    Game.GameStart();
-  }
-}
-function MouseHandler(e)
-{
-  const MouseMovement=e.clientX-canvas.offsetLeft;
-  if (MouseMovement>10+PaddleWidth/2 && MouseMovement<canvas.width-10)
-  GamePaddle.position.x=e.pageX+e.offsetX-PaddleWidth;
-}
+let GameEvent = new Event();
+document.addEventListener("keydown", GameEvent.KeyDown, false);
+document.addEventListener("keyup", GameEvent.KeyUp, false);
+document.addEventListener("mousemove", GameEvent.MouseHandler, false);
+document.addEventListener("mousedown", GameEvent.mouseClickDown, false);
+document.addEventListener("mouseup", GameEvent.mouseClickUp, false);
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -96,7 +114,7 @@ class Shape {
 class Brick extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
-    this.radii = 5;
+    this.CornerRadius = 5;
     this.life = 2;
   }
   draw() {
@@ -107,7 +125,7 @@ class Brick extends Shape {
         this.position.y,
         this.width,
         this.height,
-        this.radii
+        this.CornerRadius
       );
       context.fillStyle = FillColor;
       context.fill();
@@ -118,7 +136,7 @@ class Brick extends Shape {
         this.position.y,
         this.width,
         this.height,
-        this.radii
+        this.CornerRadius
       );
       context.fillStyle = DimmedColor;
       context.fill();
@@ -126,8 +144,12 @@ class Brick extends Shape {
     context.closePath();
   }
   decreaseLife() {
-    if (this.life) {
+    if (this.life === 2) {
       this.life--;
+    } else if (this.life === 1) {
+      this.life--;
+      Game.score++;
+      Score.innerText = `Score: ${Game.score}`;
     }
   }
 }
@@ -135,7 +157,7 @@ class Brick extends Shape {
 class Paddle extends Shape {
   constructor({ position, Velocity, width, height }) {
     super({ position, Velocity, width, height });
-    this.radii = 10;
+    this.CornerRadius = 10;
   }
   draw() {
     context.beginPath();
@@ -144,7 +166,7 @@ class Paddle extends Shape {
       this.position.y,
       this.width,
       this.height,
-      this.radii
+      this.CornerRadius
     );
     context.fillStyle = "black";
     context.fill();
@@ -184,7 +206,7 @@ class Ball extends Shape {
   constructor({ position, Velocity, width, height, radius }) {
     super({ position, Velocity, width, height });
     this.radius = radius;
-    this.moveWithPaddle = true;
+    this.movesWithPaddle = true;
   }
   draw() {
     context.beginPath();
@@ -194,7 +216,7 @@ class Ball extends Shape {
     context.closePath();
   }
   move() {
-    if (this.moveWithPaddle) {
+    if (this.movesWithPaddle) {
       if (RPressed) {
         this.Velocity.x = 20;
         this.position.x += this.Velocity.x;
@@ -229,6 +251,7 @@ class Ball extends Shape {
           this.position.x >= GamePaddle.position.x - BallRadius &&
           this.position.x <= GamePaddle.position.x + PaddleWidth + BallRadius
         ) {
+          BallPaddleSound.play();
           const collisionX = Math.abs(this.position.x - GamePaddle.position.x);
           const distanceToMiddle = collisionX - PaddleWidth / 2;
           this.Velocity.x = distanceToMiddle / 25;
@@ -238,10 +261,10 @@ class Ball extends Shape {
           this.position = { x: canvas.width / 2, y: canvas.height + 25 };
           GamePaddle.position = { x: PaddleX, y: PaddleY - 70 };
           Game.decreaseLife();
-          Lives.innerHTML = `Lives: ${Game.life}`;
+          Lives.innerText = `Lives: ${Game.life}`;
         }
-      } else if (this.position.y + this.Velocity.y > canvas.height) {
-        alert("you hit rock bottom");
+        // } else if (this.position.y + this.Velocity.y > canvas.height) {
+        //   alert("you hit rock bottom");
       }
       this.position.x += this.Velocity.x;
       this.position.y += this.Velocity.y;
@@ -254,7 +277,7 @@ class Ball extends Shape {
       y: canvas.height - PaddleHeight - BallRadius - 70,
     };
     this.Velocity = { x: 0, y: 0 };
-    this.moveWithPaddle = true;
+    this.movesWithPaddle = true;
   }
 }
 
@@ -273,50 +296,80 @@ class Environment {
     this.life = 3;
     this.score = 0;
     this.isON = false;
-    this.isEnded = false;
-    // this.requestID;
   }
 
   controlButton() {
-    console.log(StartButton.innerText);
     if (StartButton.innerText === "Start") {
       Game.GameStart();
-    } else if (StartButton.innerText === "Pause") {
+    } else if (
+      StartButton.innerText === "Pause" ||
+      StartButton.innerText === "Continue"
+    ) {
       Game.GamePause();
-    } else if (StartButton.innerText === "Play Again") {
-      DrawCanvas();
+      // } else if (StartButton.innerText === "Play Again") {
+      //   console.log("going to drawcanvas()");
+      //   DrawCanvas();
     }
   }
 
   GameStart() {
+    GameStartSound.play();
     let StartCountdown = 3;
     let StartCountdownTimerID;
-    StartButton.innerHTML = `${StartCountdown}`;
-    if (!this.isON) {
-      StartCountdownTimerID = setInterval(countdown, 970);
-      function countdown() {
-        if (StartCountdown == 1) {
-          StartButton.innerHTML = "Pause";
-          Game.isON = true;
-          clearInterval(StartCountdownTimerID);
-          GameMovement();
-        } else {
-          StartCountdown--;
-          StartButton.innerHTML = `${StartCountdown}`;
-        }
+    Game.isON = true;
+    StartButton.innerText = `${StartCountdown}`;
+    StartCountdownTimerID = setInterval(countdown, 970);
+    function countdown() {
+      if (StartCountdown == 1) {
+        StartButton.innerText = "Pause";
+        clearInterval(StartCountdownTimerID);
+        GameMovement();
+      } else {
+        StartCountdown--;
+        StartButton.innerText = `${StartCountdown}`;
       }
     }
   }
-  GamePause() {}
+
+  GamePause() {
+    if (StartButton.innerText === "Pause") {
+      PauseSound.play();
+      StartButton.innerText = "Continue";
+      cancelAnimationFrame(requestID);
+      canvas.style.backgroundColor = "rgb(0,0,0)";
+      canvas.style.opacity = "0.5";
+    } else if (StartButton.innerText === "Continue") {
+      ContinueSound.play();
+      StartButton.innerText = "Pause";
+      canvas.style.backgroundColor = "transparent";
+      canvas.style.opacity = "1";
+      GameMovement();
+    }
+  }
 
   GameOver() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
+    GameOverSound.play();
+    this.DrawBricks();
     cancelAnimationFrame(requestID);
     GamePaddle.reset();
     GameBall.reset();
-    this.isEnded = true;
     this.isON = false;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
+    context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
+    StartButton.innerText = "Play Again";
+    StartButton.style.lineHeight = "6.5em";
+  }
+
+  GameWin() {
+    cancelAnimationFrame(requestID);
+    GameWinSound.play();
+    GamePaddle.reset();
+    GameBall.reset();
+    this.isON = false;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
+    context.drawImage(GameWinImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
     StartButton.style.lineHeight = "6.5em";
   }
@@ -332,7 +385,7 @@ class Environment {
           Velocity: { x: 0, y: 0 },
           width: BrickWidth,
           height: BrickHeight,
-          radii: 10,
+          CornerRadius: 10,
         });
         BricksArray[j][i].draw();
       }
@@ -340,9 +393,9 @@ class Environment {
   }
 
   collisionDetection() {
-    for (let j = 0; j < 12; j++) {
-      for (let i = 0; i < 5; i++) {
-        const CurrentBrick = BricksArray[j][i];
+    BricksArray.forEach((row) => {
+      row.forEach((CurrentBrick) => {
+        // let CurrentBrick = testbrick;
         CurrentBrick.draw();
         if (CurrentBrick.life) {
           const BallBrickOverlapX =
@@ -354,36 +407,33 @@ class Environment {
             GameBall.position.y <=
               CurrentBrick.position.y + CurrentBrick.height + BallRadius;
           if (BallBrickOverlapX && BallBrickOverlapY) {
+            BallBrickSound.play();
             if (
-              GameBall.position.x === CurrentBrick.position.x - BallRadius ||
-              GameBall.position.x ===
-                CurrentBrick.position.x + BrickWidth + BallRadius
+              GameBall.position.x <=
+                CurrentBrick.position.x +
+                  GameBall.Velocity.x -
+                  2 * BallRadius ||
+              GameBall.position.x >=
+                CurrentBrick.position.x + GameBall.Velocity.x + BrickWidth
             ) {
               GameBall.Velocity.x = -GameBall.Velocity.x;
-            } else if (
-              GameBall.position.y === CurrentBrick.position.y - BallRadius ||
-              GameBall.position.y ===
-                CurrentBrick.position.y + CurrentBrick.height + BallRadius
-            ) {
-              GameBall.Velocity.y = -GameBall.Velocity.y;
             } else {
               GameBall.Velocity.y = -GameBall.Velocity.y;
-              GameBall.Velocity.x = -GameBall.Velocity.x;
             }
             CurrentBrick.decreaseLife();
-            this.score++;
-            Score.innerHTML = `Score: ${this.score}`;
           }
           if (this.score === 12 * 5) {
+            this.GameWin();
             console.log("you win");
           }
         }
-      }
-    }
+      });
+    });
   }
   decreaseLife() {
     if (this.life) {
       this.life--;
+      ResetSound.play();
       GameBall.reset();
       GamePaddle.reset();
     } else {
@@ -394,19 +444,15 @@ class Environment {
 
 let Game = new Environment();
 function GameMovement() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  Game.collisionDetection();
-  GamePaddle.move();
-  GameBall.move();
-  // if (Game.isEnded) {
-  //   return;
-  // }
   if (Game.isON) {
     requestID = requestAnimationFrame(GameMovement);
   } else {
     return;
   }
-  // alert(requestID)
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  Game.collisionDetection();
+  GamePaddle.move();
+  GameBall.move();
 }
 
 let testbrick = new Brick({
@@ -414,18 +460,22 @@ let testbrick = new Brick({
   Velocity: { x: 0, y: 0 },
   width: BrickWidth,
   height: BrickHeight,
-  radii: 10,
+  CornerRadius: 10,
 });
 
 // testbrick.draw();
-function DrawCanvas(isReplay) {
-  StartButton.addEventListener("click", Game.controlButton);
-  cancelAnimationFrame(Game.requestID);
+function DrawCanvas() {
+  cancelAnimationFrame(requestID);
   Game.DrawBricks();
   GamePaddle.draw();
   GameBall.draw();
   if (StartButton.innerText === "Play Again") {
+    Game.score = 0;
+    alert("score reset");
+    Game.life = 3;
+    Lives.innerText = `Lives: ${Game.life}`;
     Game.GameStart();
   }
 }
+StartButton.addEventListener("click", Game.controlButton);
 DrawCanvas();
