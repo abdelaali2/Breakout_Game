@@ -546,3 +546,4 @@ window.addEventListener("load", () => {
   Game.AdjustEnvironmentArrays();
   Game.DrawInstructions();
 });
+
