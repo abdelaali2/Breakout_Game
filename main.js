@@ -68,7 +68,7 @@ class Event {
     } else if (e.key == "Left" || e.key == "ArrowLeft") {
       LPressed = false;
     } else if (e.key == " " && !Game.isON) {
-      Game.GameStart();
+      Game.controlButton();
     } else if (e.key == "m" || e.key == "M") {
       GameEvent.MuteClicked();
     }
@@ -92,7 +92,7 @@ class Event {
 
   mouseClickUp() {
     if (!Game.isON) {
-      Game.GameStart();
+      Game.controlButton();
     }
   }
 
@@ -350,9 +350,9 @@ class Environment {
 
   setGameSpeed(GameSpeed) {
     Game.SpeedValue = GameSpeed;
-    if (GameSpeed >= 10 && GameSpeed <= 18) {
+    if (GameSpeed >= 10 && GameSpeed <= 20) {
       rangeValue.innerHTML = "Easy";
-    } else if (GameSpeed > 18 && GameSpeed <= 30) {
+    } else if (GameSpeed > 20 && GameSpeed <= 30) {
       rangeValue.innerHTML = "Medium";
     } else if (GameSpeed > 30) {
       rangeValue.innerHTML = "Hard";
