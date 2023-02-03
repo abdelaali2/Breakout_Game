@@ -14,7 +14,9 @@ const canvasRight = canvasRect.right;
 const Score = document.getElementById("Score");
 const Lives = document.getElementById("Lives");
 const Gameover = document.getElementById("Gameover");
+const rangeValue = document.getElementById("rangeValue");
 const MuteButton = document.getElementById("MuteButton");
+const GameSpeedSlider = document.getElementById("GameSpeedSlider");
 const MuteImage = new Image(50, 50);
 MuteImage.src = "./Media/unmutelogo.png";
 MuteButton.appendChild(MuteImage);
@@ -40,14 +42,7 @@ PauseSound.src = "./Media/Pause.wav";
 const ResetSound = new Audio();
 ResetSound.src = "./Media/Reset.wav";
 const SoundPlaylist = [];
-SoundPlaylist.push(GameStartSound);
-SoundPlaylist.push(GameOverSound);
-SoundPlaylist.push(GameWinSound);
-SoundPlaylist.push(BallBrickSound);
-SoundPlaylist.push(BallPaddleSound);
-SoundPlaylist.push(ContinueSound);
-SoundPlaylist.push(PauseSound);
-SoundPlaylist.push(ResetSound);
+const Instructions = [];
 let requestID;
 let RPressed = false;
 let LPressed = false;
@@ -63,7 +58,7 @@ class Event {
       LPressed = true;
     } else if (e.key == " " && GameBall.movesWithPaddle) {
       BallPaddleSound.play();
-      GameBall.Velocity = { x: 0, y: -10 };
+      GameBall.Velocity = { x: 0, y: -Game.SpeedValue };
       GameBall.movesWithPaddle = false;
     } else if (e.key == "Escape") {
       Game.GamePause();
@@ -97,7 +92,7 @@ class Event {
   mouseClickDown() {
     if (GameBall.movesWithPaddle) {
       BallPaddleSound.play();
-      GameBall.Velocity = { x: 0, y: -10 };
+      GameBall.Velocity = { x: 0, y: Game.SpeedValue };
       GameBall.movesWithPaddle = false;
     }
   }
@@ -330,6 +325,47 @@ class Environment {
     this.score = 0;
     this.isON = false;
     this.isMuted = false;
+    this.SpeedValue = GameSpeedSlider.value;
+  }
+
+  AdjustEnvironmentArrays() {
+    Instructions.push(`Use the slider to set game difficulty`);
+    Instructions.push(`Press [____] or 🖱️ click to Start`);
+    Instructions.push(`Use ⇔ or 🖱️ to control paddle`);
+    Instructions.push(`Press "ESC" to Pause`);
+    Instructions.push(`Press "M" to Mute`);
+    SoundPlaylist.push(GameStartSound);
+    SoundPlaylist.push(GameOverSound);
+    SoundPlaylist.push(GameWinSound);
+    SoundPlaylist.push(BallBrickSound);
+    SoundPlaylist.push(BallPaddleSound);
+    SoundPlaylist.push(ContinueSound);
+    SoundPlaylist.push(PauseSound);
+    SoundPlaylist.push(ResetSound);
+  }
+
+  DrawInstructions() {
+    context.font = "100px Arial";
+    context.textAlign = "center";
+    context.fillStyle = "#f42279";
+    context.strokeStyle = "white";
+    context.lineWidth = 5;
+    Instructions.forEach((line, index) => {
+      context.strokeText(line, canvas.width / 2, index * 170 + 220);
+      context.fillText(line, canvas.width / 2, index * 170 + 220);
+    });
+  }
+
+  setGameSpeed(GameSpeed) {
+    Game.SpeedValue = GameSpeed;
+    if (GameSpeed >= 10 && GameSpeed <= 30) {
+      rangeValue.innerHTML = "Easy";
+    } else if (GameSpeed > 30 && GameSpeed <= 60) {
+      rangeValue.innerHTML = "Medium";
+    } else if (GameSpeed > 60) {
+      rangeValue.innerHTML = "Hard";
+    }
+    GameSpeedSlider.blur();
   }
 
   controlButton() {
@@ -371,11 +407,14 @@ class Environment {
     if (StartButton.innerText === "Pause") {
       PauseSound.play();
       StartButton.innerText = "Continue";
+      StartButton.style.lineHeight = "5em";
+      StartButton.style.fontSize = "1.4rem";
       cancelAnimationFrame(requestID);
       canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     } else if (StartButton.innerText === "Continue") {
       ContinueSound.play();
       StartButton.innerText = "Pause";
+      StartButton.style.lineHeight = "5em";
       canvas.style.backgroundColor = "rgba(0,0,0,0.1)";
       canvas.style.opacity = "1";
       GameMovement();
@@ -390,7 +429,7 @@ class Environment {
     canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     context.drawImage(GameoverImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
-    StartButton.style.lineHeight = "6.5em";
+    StartButton.style.lineHeight = "2.25em";
   }
 
   GameWin() {
@@ -427,7 +466,6 @@ class Environment {
   collisionDetection() {
     BricksArray.forEach((row) => {
       row.forEach((CurrentBrick) => {
-        // let CurrentBrick = testbrick;
         CurrentBrick.draw();
         if (CurrentBrick.life) {
           const BallBrickOverlapX =
@@ -487,14 +525,6 @@ function GameMovement() {
   GameBall.move();
 }
 
-let testbrick = new Brick({
-  position: { x: canvas.width / 2, y: canvas.height / 2 },
-  Velocity: { x: 0, y: 0 },
-  width: BrickWidth,
-  height: BrickHeight,
-  CornerRadius: 10,
-});
-
 function DrawCanvas() {
   cancelAnimationFrame(requestID);
   Game.DrawBricks();
@@ -514,21 +544,9 @@ function DrawCanvas() {
   }
 }
 StartButton.addEventListener("click", Game.controlButton);
-DrawInstructions();
 
-function DrawInstructions() {
-  const Instructions = [];
-  Instructions.push(`Press [____] or 🖱️ click to Start`);
-  Instructions.push(`Press "M" to Mute`);
-  Instructions.push(`Press "ESC" to Pause`);
-  Instructions.push(`⇔ or 🖱️ to control paddle`);
-  context.font = "100px Arial";
-  context.textAlign = "center";
-  context.fillStyle = "#f42279";
-  context.strokeStyle = "white";
-  context.lineWidth = 5;
-  Instructions.forEach((line, index) => {
-    context.strokeText(line, canvas.width / 2, index * 200 + 300);
-    context.fillText(line, canvas.width / 2, index * 200 + 300);
-  });
-}
+window.addEventListener("load", () => {
+  Game.setGameSpeed(Game.SpeedValue);
+  Game.AdjustEnvironmentArrays();
+  Game.DrawInstructions();
+});
