@@ -120,7 +120,6 @@ canvas.addEventListener("mousemove", GameEvent.MouseHandler, false);
 canvas.addEventListener("mousedown", GameEvent.mouseClickDown, false);
 canvas.addEventListener("mouseup", GameEvent.mouseClickUp, false);
 MuteButton.addEventListener("click", GameEvent.MuteClicked, false);
-StartButton.addEventListener("click", Game.controlButton, false);
 
 class Shape {
   constructor({ position, Velocity, width, height }) {
@@ -285,8 +284,6 @@ class Ball extends Shape {
           Game.decreaseLife();
           Lives.innerText = `Lives: ${Game.life}`;
         }
-        // } else if (this.position.y + this.Velocity.y > canvas.height) {
-        //   alert("you hit rock bottom");
       }
       this.position.x += this.Velocity.x;
       this.position.y += this.Velocity.y;
@@ -540,6 +537,7 @@ function DrawCanvas() {
     GameBall.draw();
  }
 }
+StartButton.addEventListener("click", Game.controlButton, false);
 
 window.addEventListener("load", () => {
   Game.setGameSpeed(Game.SpeedValue);
