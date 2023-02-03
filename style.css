@@ -59,19 +59,6 @@ body {
   word-wrap: break-word;
   /* vertical-align: middle; */
 }
-#popup {
-  display: block;
-  background-color: rgba(0, 0, 0, 0.75);
-  /* content: "Game Over"; */
-  min-width: 100%;
-  min-height: 100%;
-  font-size: 7em;
-  color: rgb(165, 131, 56);
-  position: absolute;
-  z-index: 2;
-  margin: 0 auto;
-  display:none;
-}
 
 #text {
   position: absolute;
