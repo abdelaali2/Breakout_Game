@@ -17,9 +17,11 @@
             </div>
             <div id="Startbutton">Start</div>
             <div id="MuteButton"></div>
+            <div ></div>
+            <span id="rangeValue"></span>
+            <Input id="GameSpeedSlider" type="range" value="20" min="10" max="90" onChange="Game.setGameSpeed(this.value)" onmousemove="Game.setGameSpeed(this.value)"></Input>
         </nav>  
-        <canvas id="myCanvas" width="2660" height="1080" style="border:1px solid
-            #c3c3c3;"></canvas>
+        <canvas id="myCanvas" width="2660" height="1080" style="border:1px solid #c3c3c3;"></canvas>
     </body>
 
 </html>
