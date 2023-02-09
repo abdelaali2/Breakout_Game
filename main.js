@@ -350,11 +350,11 @@ class Environment {
 
   setGameSpeed(GameSpeed) {
     Game.SpeedValue = GameSpeed;
-    if (GameSpeed >= 10 && GameSpeed <= 20) {
+    if (GameSpeed >= 5 && GameSpeed <= 10) {
       rangeValue.innerHTML = "Easy";
-    } else if (GameSpeed > 20 && GameSpeed <= 30) {
+    } else if (GameSpeed > 10 && GameSpeed <= 15) {
       rangeValue.innerHTML = "Medium";
-    } else if (GameSpeed > 30) {
+    } else if (GameSpeed > 15) {
       rangeValue.innerHTML = "Hard";
     }
     GameSpeedSlider.blur();
@@ -388,7 +388,7 @@ class Environment {
         clearInterval(StartCountdownTimerID);
         canvas.style.backgroundColor = "rgba(0,0,0,0.1)";
         DrawCanvas();
-        GameMovement();
+        Game.GameMovement();
       } else {
         StartCountdown--;
         StartButton.innerText = `${StartCountdown}`;
@@ -409,7 +409,7 @@ class Environment {
       StartButton.innerText = "Pause";
       StartButton.style.lineHeight = "5em";
       canvas.style.backgroundColor = "rgba(0,0,0,0.1)";
-      GameMovement();
+      Game.GameMovement();
     }
   }
 
@@ -434,7 +434,7 @@ class Environment {
     canvas.style.backgroundColor = "rgba(0,0,0,0.5)";
     context.drawImage(GameWinImage, 0, 0, canvas.width, canvas.height);
     StartButton.innerText = "Play Again";
-    StartButton.style.lineHeight = "6.5em";
+    StartButton.style.lineHeight = "2.1em";
   }
 
   DrawBricks() {
@@ -501,20 +501,21 @@ class Environment {
       this.GameOver();
     }
   }
+  GameMovement() {
+    if (Game.isON) {
+      requestID = requestAnimationFrame(Game.GameMovement);
+    } else {
+      return;
+    }
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    Game.collisionDetection();
+    GamePaddle.move();
+    GameBall.move();
+  }
+  
 }
 
 let Game = new Environment();
-function GameMovement() {
-  if (Game.isON) {
-    requestID = requestAnimationFrame(GameMovement);
-  } else {
-    return;
-  }
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  Game.collisionDetection();
-  GamePaddle.move();
-  GameBall.move();
-}
 
 function DrawCanvas() {
   cancelAnimationFrame(requestID);
