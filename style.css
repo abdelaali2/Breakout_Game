@@ -15,7 +15,6 @@ body {
   background-size: 100% 100%;
   background-position: center;
   vertical-align: middle;
-  overflow: hidden;
 }
 nav {
   display: flex;
